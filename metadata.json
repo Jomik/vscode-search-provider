@@ -1,0 +1,7 @@
+{
+  "uuid": "vscode-search-provider@jomik.org",
+  "name": "VSCode Search Provider",
+  "description": "Provide recent VSCode projects as search results in overview",
+  "shell-version": ["3.24"],
+  "url": "https://github.com/jomik/vscode-search-provider"
+}
