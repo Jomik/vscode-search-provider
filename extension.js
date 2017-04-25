@@ -56,17 +56,18 @@ const VSCodeSearchProvider = new Lang.Class({
   getInitialResultSet: function (terms, callback, cancellable) {
     let search = terms.join(" ").toLowerCase();
     this._results = getFolderPaths().map(pathToResultObject);
-    this._resultIds = [];
-    for (candidate of this._results) {
-      if (candidate.name.toLowerCase().indexOf(search) !== -1) {
-        this._resultIds.push(candidate.id);
-      }
-    }
-    return callback(this._resultIds);
+    this.getSubsearchResultSet(undefined, terms, callback);
   },
 
-  getSubsearchResultSet: function (previousResults, terms, callback, cancellable) {
-    this.getInitialResultSet(terms, callback, cancellable);
+  getSubsearchResultSet: function (previousResults, terms, callback) {
+    let search = terms.join(" ").toLowerCase();
+    let resultIds = [];
+    for (candidate of this._results) {
+      if (candidate.name.toLowerCase().indexOf(search) !== -1) {
+        resultIds.push(candidate.id);
+      }
+    }
+    callback(resultIds);
   },
 
   getResultMetas: function (resultIds, callback) {
