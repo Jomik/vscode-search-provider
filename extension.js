@@ -48,13 +48,12 @@ const VSCodeSearchProvider = new Lang.Class({
     this.id = 'VSCodeProjects';
     this.appInfo = {
       get_name: function () { return 'vscode-search-provider'; },
-      get_icon: function () { return Gio.icon_new_for_string("/usr/share/icons/visual-studio-code.png"); },
+      get_icon: function () { return Gio.Icon.new_for_string("visual-studio-code"); },
       get_id: function () { return this.id; }
     };
   },
 
   getInitialResultSet: function (terms, callback, cancellable) {
-    let search = terms.join(" ").toLowerCase();
     this._results = getFolderPaths().map(pathToResultObject);
     this.getSubsearchResultSet(undefined, terms, callback);
   },
