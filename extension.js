@@ -2,6 +2,7 @@ const Lang = imports.lang;
 const Main = imports.ui.main;
 const GLib = imports.gi.GLib;
 const Gio = imports.gi.Gio;
+const Util = imports.misc.util;
 
 const homePath = GLib.getenv("HOME");
 
@@ -105,7 +106,11 @@ const VSCodeSearchProvider = new Lang.Class({
 
   activateResult: function (id, terms) {
     debug("activateResult id: " + id);
-    debug("activateResult terms: " + terms.join(" "));
+    let result = this._results.filter(function(res) {
+      return res.id === id;
+    })[0];
+    debug("spawn code " + result.path);
+    Util.spawn(["code", result.path]);
   }
 });
 
