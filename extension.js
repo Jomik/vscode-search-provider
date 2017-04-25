@@ -6,33 +6,20 @@ const Util = imports.misc.util;
 
 const homePath = GLib.getenv("HOME");
 
-var vscodeSearchProvider = null;
-var storage = null;
+let vscodeSearchProvider = null;
+let storage = null;
 
 function debug(message) {
   global.log("VS Code Search Provider ~ " + message);
 }
 
 function getFolderPaths() {
-  let json = null;
   try {
-    json = JSON.parse(GLib.file_get_contents(storage)[1]);
+    const json = JSON.parse(GLib.file_get_contents(storage)[1]);
+    return json.openedPathsList.folders;
   } catch (e) {
-    // Return empty array.
+    return [];
   }
-
-  if (json) {
-    json = json["openedPathsList"];
-    if (json) {
-      json = json["folders"];
-      if (json) {
-        debug("getFolderPaths = " + json);
-        return json;
-      }
-    }
-  }
-  debug("getFolderPaths = " + json);
-  return [];
 }
 
 function projectNameFromPath(path) {
@@ -50,11 +37,11 @@ function fullPath(path) {
 function pathToResultObject(path, index) {
   debug("pathToResultObject(" + index + 1 + "): " + path)
   return {
-    'id': index + 1,
-    'name': projectNameFromPath(path),
-    'description': fullPath(path),
-    'path': path,
-    'createIcon': function (size) {
+    id: index + 1,
+    name: projectNameFromPath(path),
+    description: fullPath(path),
+    path: path,
+    createIcon: function (size) {
       debug("Icon for " + projectNameFromPath(path));
     }
   }
