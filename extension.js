@@ -3,6 +3,8 @@ const Main = imports.ui.main;
 const GLib = imports.gi.GLib;
 const Gio = imports.gi.Gio;
 
+const homePath = GLib.getenv("HOME");
+
 var vscodeSearchProvider = null;
 var storage = null;
 
@@ -38,14 +40,20 @@ function projectNameFromPath(path) {
   return name;
 }
 
+function fullPath(path) {
+  return path.startsWith(homePath)
+    ? "~" + path.slice(homePath.length)
+    : path;
+}
+
 function pathToResultObject(path, index) {
   debug("pathToResultObject(" + index + 1 + "): " + path)
   return {
     'id': index + 1,
     'name': projectNameFromPath(path),
-    'description': "VSCode project",
+    'description': fullPath(path),
     'path': path,
-    'createIcon': function(size) {
+    'createIcon': function (size) {
       debug("Icon for " + projectNameFromPath(path));
     }
   }
@@ -57,6 +65,11 @@ const VSCodeSearchProvider = new Lang.Class({
   _init: function () {
     global.log("_init");
     this.id = 'VSCodeProjects';
+    this.appInfo = {
+      get_name: function () { return 'vscode-search-provider'; },
+      get_icon: function () { return Gio.icon_new_for_string("/usr/share/icons/visual-studio-code.png"); },
+      get_id: function () { return this.id; }
+    };
   },
 
   getInitialResultSet: function (terms, callback, cancellable) {
@@ -97,7 +110,7 @@ const VSCodeSearchProvider = new Lang.Class({
 });
 
 function init() {
-  storage = GLib.getenv("HOME") + "/.config/Code/storage.json";
+  storage = homePath + "/.config/Code/storage.json";
   global.log("init");
 }
 
