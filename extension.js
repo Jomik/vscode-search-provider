@@ -70,7 +70,6 @@ const VSCodeSearchProvider = new Lang.Class({
   },
 
   getInitialResultSet: function (terms, callback, cancellable) {
-    let search = terms.join(" ").toLowerCase();
     this._results = getFolderPaths().map(pathToResultObject);
     this.getSubsearchResultSet(undefined, terms, callback);
   },
