@@ -45,7 +45,7 @@ function pathToResultObject(path, index) {
     'name': projectNameFromPath(path),
     'description': "VSCode project",
     'path': path,
-    'createIcon': function(size) {
+    'createIcon': function (size) {
       debug("Icon for " + projectNameFromPath(path));
     }
   }
@@ -57,6 +57,11 @@ const VSCodeSearchProvider = new Lang.Class({
   _init: function () {
     global.log("_init");
     this.id = 'VSCodeProjects';
+    this.appInfo = {
+      get_name: function () { return 'vscode-search-provider'; },
+      get_icon: function () { return Gio.icon_new_for_string("/usr/share/icons/visual-studio-code.png"); },
+      get_id: function () { return this.id; }
+    };
   },
 
   getInitialResultSet: function (terms, callback, cancellable) {
