@@ -9,10 +9,6 @@ const homePath = GLib.getenv("HOME");
 let vscodeSearchProvider = null;
 let storage = null;
 
-function debug(message) {
-  global.log("VS Code Search Provider ~ " + message);
-}
-
 function getFolderPaths() {
   try {
     const json = JSON.parse(GLib.file_get_contents(storage)[1]);
@@ -24,7 +20,6 @@ function getFolderPaths() {
 
 function projectNameFromPath(path) {
   let name = path.split('\\').pop().split('/').pop();
-  debug("projectNameFromPath: " + path + " -> " + name);
   return name;
 }
 
@@ -35,14 +30,12 @@ function fullPath(path) {
 }
 
 function pathToResultObject(path, index) {
-  debug("pathToResultObject(" + index + 1 + "): " + path)
   return {
     id: index + 1,
     name: projectNameFromPath(path),
     description: fullPath(path),
     path: path,
     createIcon: function (size) {
-      debug("Icon for " + projectNameFromPath(path));
     }
   }
 }
@@ -61,7 +54,6 @@ const VSCodeSearchProvider = new Lang.Class({
   },
 
   getInitialResultSet: function (terms, callback, cancellable) {
-    debug("getInitialResultSet: " + terms);
     let search = terms.join(" ").toLowerCase();
     this._results = getFolderPaths().map(pathToResultObject);
     this._resultIds = [];
@@ -70,12 +62,10 @@ const VSCodeSearchProvider = new Lang.Class({
         this._resultIds.push(candidate.id);
       }
     }
-    debug("Found [" + this._resultIds + "] for " + search);
     return callback(this._resultIds);
   },
 
   getSubsearchResultSet: function (previousResults, terms, callback, cancellable) {
-    debug("getSubsearchResultSet");
     this.getInitialResultSet(terms, callback, cancellable);
   },
 
@@ -83,7 +73,6 @@ const VSCodeSearchProvider = new Lang.Class({
     let resultMetas = this._results.filter(function (res) {
       return resultIds.indexOf(res.id) !== -1;
     });
-    debug("getResultMetas: " + resultMetas);
     callback(resultMetas);
   },
 
@@ -92,23 +81,19 @@ const VSCodeSearchProvider = new Lang.Class({
   },
 
   activateResult: function (id, terms) {
-    debug("activateResult id: " + id);
     let result = this._results.filter(function(res) {
       return res.id === id;
     })[0];
-    debug("spawn code " + result.path);
     Util.spawn(["code", result.path]);
   }
 });
 
 function init() {
   storage = homePath + "/.config/Code/storage.json";
-  global.log("init");
 }
 
 function enable() {
   if (!vscodeSearchProvider) {
-    global.log("enabled");
     vscodeSearchProvider = new VSCodeSearchProvider();
     Main.overview.viewSelector._searchResults._registerProvider(vscodeSearchProvider);
   }
@@ -116,7 +101,6 @@ function enable() {
 
 function disable() {
   if (vscodeSearchProvider) {
-    global.log("disabled");
     Main.overview.viewSelector._searchResults._unregisterProvider(vscodeSearchProvider);
     vscodeSearchProvider = null;
   }
