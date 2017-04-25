@@ -3,6 +3,8 @@ const Main = imports.ui.main;
 const GLib = imports.gi.GLib;
 const Gio = imports.gi.Gio;
 
+const homePath = GLib.getenv("HOME");
+
 var vscodeSearchProvider = null;
 var storage = null;
 
@@ -38,12 +40,18 @@ function projectNameFromPath(path) {
   return name;
 }
 
+function fullPath(path) {
+  return path.startsWith(homePath)
+    ? "~" + path.slice(homePath.length)
+    : path;
+}
+
 function pathToResultObject(path, index) {
   debug("pathToResultObject(" + index + 1 + "): " + path)
   return {
     'id': index + 1,
     'name': projectNameFromPath(path),
-    'description': "VSCode project",
+    'description': fullPath(path),
     'path': path,
     'createIcon': function (size) {
       debug("Icon for " + projectNameFromPath(path));
@@ -102,7 +110,7 @@ const VSCodeSearchProvider = new Lang.Class({
 });
 
 function init() {
-  storage = GLib.getenv("HOME") + "/.config/Code/storage.json";
+  storage = homePath + "/.config/Code/storage.json";
   global.log("init");
 }
 
