@@ -9,6 +9,22 @@ const homePath = GLib.getenv("HOME");
 let vscodeSearchProvider = null;
 let storage = null;
 
+let desktopAppInfo = Gio.DesktopAppInfo.new("code.desktop");
+
+if (desktopAppInfo === null) {
+  desktopAppInfo = Gio.DesktopAppInfo.new("visual-studio-code.desktop");
+}
+
+let vscodeIcon;
+
+if (desktopAppInfo !== null) {
+  vscodeIcon = desktopAppInfo.get_icon();
+}
+
+function debug(message) {		
+  global.log("VS Code Search Provider ~ " + message);		
+}
+
 function getFolderPaths() {
   try {
     const json = JSON.parse(GLib.file_get_contents(storage)[1]);
@@ -48,7 +64,7 @@ const VSCodeSearchProvider = new Lang.Class({
     this.id = 'VSCodeProjects';
     this.appInfo = {
       get_name: function () { return 'vscode-search-provider'; },
-      get_icon: function () { return Gio.Icon.new_for_string("visual-studio-code"); },
+      get_icon: function () { return vscodeIcon; },
       get_id: function () { return this.id; }
     };
   },
