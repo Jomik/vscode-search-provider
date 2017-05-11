@@ -4,7 +4,13 @@ const GLib = imports.gi.GLib;
 const Gio = imports.gi.Gio;
 const Util = imports.misc.util;
 
+const Self = imports.misc.extensionUtils.getCurrentExtension();
+const Utils = Self.imports.utils;
+
 const homePath = GLib.getenv("HOME");
+
+let FOLDERS = true;
+let FILES = true;
 
 let vscodeSearchProvider = null;
 let storage = null;
@@ -25,10 +31,21 @@ function debug(message) {
   global.log("VS Code Search Provider ~ " + message);		
 }
 
-function getFolderPaths() {
+function getPaths() {
   try {
     const json = JSON.parse(GLib.file_get_contents(storage)[1]);
-    return json.openedPathsList.folders;
+    
+    let folders = [];
+    if (FOLDERS) {
+      folders = json.openedPathsList.folders;
+    }
+
+    let files = [];
+    if (FILES) {
+      files = json.openedPathsList.files;
+    }
+
+    return folders.concat(files);
   } catch (e) {
     return [];
   }
@@ -67,10 +84,19 @@ const VSCodeSearchProvider = new Lang.Class({
       get_icon: function () { return vscodeIcon; },
       get_id: function () { return this.id; }
     };
+
+    this.settings = Utils.getSettings();
+    this.settings.connect('changed', Lang.bind(this, this._applySettings));
+    this._applySettings();
+  },
+
+  _applySettings: function() {
+    FOLDERS = this.settings.get_boolean('show-folders');
+    FILES = this.settings.get_boolean('show-files');
   },
 
   getInitialResultSet: function (terms, callback, cancellable) {
-    this._results = getFolderPaths().map(pathToResultObject);
+    this._results = getPaths().map(pathToResultObject);
     this.getSubsearchResultSet(undefined, terms, callback);
   },
 
