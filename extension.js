@@ -45,7 +45,11 @@ function getPaths() {
       files = json.openedPathsList.files;
     }
 
-    return folders.concat(files);
+    let exists = function(path) {
+      return Gio.File.new_for_path(path).query_exists(null);
+    }
+
+    return folders.concat(files).filter(exists);
   } catch (e) {
     return [];
   }
@@ -102,13 +106,13 @@ const VSCodeSearchProvider = new Lang.Class({
 
   getSubsearchResultSet: function (previousResults, terms, callback) {
     let search = terms.join(" ").toLowerCase();
-    let resultIds = [];
-    for (candidate of this._results) {
-      if (candidate.name.toLowerCase().indexOf(search) !== -1) {
-        resultIds.push(candidate.id);
-      }
+    let containsSearch = function(candidate) {
+      return candidate.name.toLowerCase().indexOf(search) !== -1;
     }
-    callback(resultIds);
+    let getId = function(candidate) {
+      return candidate.id;
+    };
+    callback(this._results.filter(containsSearch).map(getId));
   },
 
   getResultMetas: function (resultIds, callback) {
