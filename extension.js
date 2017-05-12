@@ -32,6 +32,10 @@ function debug(message) {
 }
 
 function getPaths() {
+  function exists(path) {
+    return Gio.File.new_for_path(path).query_exists(null);
+  }
+  
   try {
     const json = JSON.parse(GLib.file_get_contents(storage)[1]);
     
@@ -43,10 +47,6 @@ function getPaths() {
     let files = [];
     if (FILES) {
       files = json.openedPathsList.files;
-    }
-
-    function exists(path) {
-      return Gio.File.new_for_path(path).query_exists(null);
     }
 
     return folders.concat(files).filter(exists);
@@ -81,7 +81,6 @@ const VSCodeSearchProvider = new Lang.Class({
   Name: 'VS Code Search Provider',
 
   _init: function () {
-    global.log("_init");
     this.id = 'VSCodeProjects';
     this.appInfo = {
       get_name: function () { return 'vscode-search-provider'; },
