@@ -45,7 +45,7 @@ function getPaths() {
       files = json.openedPathsList.files;
     }
 
-    let exists = function(path) {
+    function exists(path) {
       return Gio.File.new_for_path(path).query_exists(null);
     }
 
@@ -106,10 +106,10 @@ const VSCodeSearchProvider = new Lang.Class({
 
   getSubsearchResultSet: function (previousResults, terms, callback) {
     let search = terms.join(" ").toLowerCase();
-    let containsSearch = function(candidate) {
+    function containsSearch(candidate) {
       return candidate.name.toLowerCase().indexOf(search) !== -1;
     }
-    let getId = function(candidate) {
+    function getId(candidate) {
       return candidate.id;
     };
     callback(this._results.filter(containsSearch).map(getId));
