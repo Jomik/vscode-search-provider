@@ -104,7 +104,7 @@ const VSCodeSearchProvider = new Lang.Class({
   },
 
   getSubsearchResultSet: function (previousResults, terms, callback) {
-    let search = terms.join(" ").toLowerCase();
+    const search = terms.join(" ").toLowerCase();
     function containsSearch(candidate) {
       return candidate.name.toLowerCase().indexOf(search) !== -1;
     }
@@ -115,7 +115,7 @@ const VSCodeSearchProvider = new Lang.Class({
   },
 
   getResultMetas: function (resultIds, callback) {
-    let resultMetas = this._results.filter(function (res) {
+    const resultMetas = this._results.filter(function (res) {
       return resultIds.indexOf(res.id) !== -1;
     });
     callback(resultMetas);
@@ -126,7 +126,7 @@ const VSCodeSearchProvider = new Lang.Class({
   },
 
   activateResult: function (id, terms) {
-    let result = this._results.filter(function(res) {
+    const result = this._results.filter(function(res) {
       return res.id === id;
     })[0];
     Util.spawn(["code", result.path]);

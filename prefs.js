@@ -11,11 +11,11 @@ function init() {
 }
 
 function buildPrefsWidget() {
-  let buildable = new Gtk.Builder();
+  const buildable = new Gtk.Builder();
   buildable.add_from_file(Self.dir.get_path() + '/prefs.xml');
-  let box = buildable.get_object('prefs_widget');
+  const box = buildable.get_object('prefs_widget');
 
-  let version_label = buildable.get_object('version_info');
+  const version_label = buildable.get_object('version_info');
   version_label.set_text('[VSCode-Search-Provider v' + Self.metadata.version + ']');
 
   settings.bind('show-folders', buildable.get_object('field_folders'), 'active', Gio.SettingsBindFlags.DEFAULT);
