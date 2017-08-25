@@ -9,7 +9,7 @@ const Utils = Self.imports.utils;
 
 const homePath = GLib.getenv("HOME");
 
-let FOLDERS = true;
+let WORKSPACES = true;
 let FILES = true;
 
 let vscodeSearchProvider = null;
@@ -39,9 +39,9 @@ function getPaths() {
   try {
     const json = JSON.parse(GLib.file_get_contents(storage)[1]);
     
-    let folders = [];
-    if (FOLDERS) {
-      folders = json.openedPathsList.folders;
+    let workspaces = [];
+    if (WORKSPACES) {
+      workspaces = json.openedPathsList.workspaces;
     }
 
     let files = [];
@@ -49,7 +49,7 @@ function getPaths() {
       files = json.openedPathsList.files;
     }
 
-    return folders.concat(files).filter(exists);
+    return workspaces.concat(files).filter(exists);
   } catch (e) {
     return [];
   }
@@ -94,7 +94,7 @@ const VSCodeSearchProvider = new Lang.Class({
   },
 
   _applySettings: function() {
-    FOLDERS = this.settings.get_boolean('show-folders');
+    WORKSPACES = this.settings.get_boolean('show-workspaces');
     FILES = this.settings.get_boolean('show-files');
   },
 

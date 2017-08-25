@@ -46,13 +46,13 @@
 							<property name="spacing">12</property>
 							<child>
 								<object class="GtkLabel">
-									<property translatable="no" name="label">Show folders</property>
+									<property translatable="no" name="label">Show workspaces</property>
 									<property name="hexpand">true</property>
 									<property name="halign">1</property>
 								</object>
 							</child>
 							<child>
-								<object class="GtkSwitch" id="field_folders">
+								<object class="GtkSwitch" id="field_workspaces">
 									<property name="active">true</property>
 								</object>
 							</child>

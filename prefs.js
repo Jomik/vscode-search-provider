@@ -18,7 +18,7 @@ function buildPrefsWidget() {
   const version_label = buildable.get_object('version_info');
   version_label.set_text('[VSCode-Search-Provider v' + Self.metadata.version + ']');
 
-  settings.bind('show-folders', buildable.get_object('field_folders'), 'active', Gio.SettingsBindFlags.DEFAULT);
+  settings.bind('show-workspaces', buildable.get_object('field_workspaces'), 'active', Gio.SettingsBindFlags.DEFAULT);
   settings.bind('show-files', buildable.get_object('field_files'), 'active', Gio.SettingsBindFlags.DEFAULT);
 
   box.show_all();
