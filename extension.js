@@ -106,7 +106,7 @@ const VSCodeSearchProvider = new Lang.Class({
   getSubsearchResultSet: function (previousResults, terms, callback) {
     const search = terms.join(" ").toLowerCase();
     function containsSearch(candidate) {
-      return candidate.name.toLowerCase().indexOf(search) !== -1;
+      return candidate.path.toLowerCase().indexOf(search) !== -1;
     }
     function getId(candidate) {
       return candidate.id;
