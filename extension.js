@@ -15,10 +15,21 @@ let FILES = true;
 let vscodeSearchProvider = null;
 let storage = null;
 
+let configDirName = "Code";
+let commandName = "code";
+
 let desktopAppInfo = Gio.DesktopAppInfo.new("code.desktop");
 
 if (desktopAppInfo === null) {
   desktopAppInfo = Gio.DesktopAppInfo.new("visual-studio-code.desktop");
+}
+
+if (desktopAppInfo === null) {
+  desktopAppInfo = Gio.DesktopAppInfo.new("vscode-oss.desktop");
+  if (desktopAppInfo !== null) {
+    configDir = "Code - OSS";
+    commandName = "code-oss";
+  }
 }
 
 let vscodeIcon;
@@ -129,12 +140,12 @@ const VSCodeSearchProvider = new Lang.Class({
     const result = this._results.filter(function(res) {
       return res.id === id;
     })[0];
-    Util.spawn(["code", result.path]);
+    Util.spawn([commandName, result.path]);
   }
 });
 
 function init() {
-  storage = homePath + "/.config/Code/storage.json";
+  storage = homePath + "/.config/" + configDirName + "/storage.json";
 }
 
 function enable() {
