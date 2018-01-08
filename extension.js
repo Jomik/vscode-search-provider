@@ -27,7 +27,7 @@ if (desktopAppInfo === null) {
 if (desktopAppInfo === null) {
   desktopAppInfo = Gio.DesktopAppInfo.new("vscode-oss.desktop");
   if (desktopAppInfo !== null) {
-    configDir = "Code - OSS";
+    configDirName = "Code - OSS";
     commandName = "code-oss";
   }
 }
