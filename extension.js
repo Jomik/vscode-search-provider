@@ -51,6 +51,13 @@ function debug(message) {
 }
 
 function getPaths() {
+  function toPath(uri) {
+    if (uri.indexOf('file://') === 0) {
+      return uri.substring(7);
+    }
+    return uri;
+  }
+
   function exists(path) {
     return Gio.File.new_for_path(path).query_exists(null);
   }
@@ -60,15 +67,15 @@ function getPaths() {
     
     let workspaces = [];
     if (WORKSPACES) {
-      workspaces = json.openedPathsList.workspaces;
+      workspaces = json.openedPathsList.workspaces2 || json.openedPathsList.workspaces || [];
     }
 
     let files = [];
     if (FILES) {
-      files = json.openedPathsList.files;
+      files = json.openedPathsList.files2 || json.openedPathsList.files || [];
     }
 
-    return workspaces.concat(files).filter(exists);
+    return workspaces.concat(files).map(toPath).filter(exists);
   } catch (e) {
     return [];
   }
