@@ -50,12 +50,21 @@ function debug(message) {
   global.log("VS Code Search Provider ~ " + message);		
 }
 
+function isString(value) {
+  return typeof value === 'string' || value instanceof String;
+}
+
 function getPaths() {
   function toPath(uri) {
-    if (uri.indexOf('file://') === 0) {
-      return uri.substring(7);
+    if (isString(uri)) {
+      if (uri.indexOf('file://') === 0) {
+        return uri.substring(7);
+      }
+      return uri;
     }
-    return uri;
+    else {
+      return uri.configPath;
+    }
   }
 
   function exists(path) {
