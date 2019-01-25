@@ -16,7 +16,6 @@ let vscodeSearchProvider = null;
 let storage = null;
 
 let configDirName = "Code";
-let commandName = "code";
 
 let desktopAppInfo = Gio.DesktopAppInfo.new("code.desktop");
 
@@ -36,14 +35,15 @@ if (desktopAppInfo === null) {
   desktopAppInfo = Gio.DesktopAppInfo.new("vscode-oss.desktop");
   if (desktopAppInfo !== null) {
     configDirName = "Code - OSS";
-    commandName = "code-oss";
   }
 }
 
 let vscodeIcon;
+let commandName = "code";
 
 if (desktopAppInfo !== null) {
   vscodeIcon = desktopAppInfo.get_icon();
+  commandName = desktopAppInfo.get_commandline().split(' ')[0];
 }
 
 function debug(message) {		
