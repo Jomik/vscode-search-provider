@@ -4,5 +4,5 @@
   "description": "Provide recent VSCode projects as search results in overview",
   "shell-version": ["3.24", "3.28", "3.30"],
   "url": "https://github.com/jomik/vscode-search-provider",
-  "version": 10
+  "version": 11
 }
