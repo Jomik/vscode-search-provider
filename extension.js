@@ -76,7 +76,7 @@ function getPaths() {
     
     let workspaces = [];
     if (WORKSPACES) {
-      workspaces = json.openedPathsList.workspaces2 || json.openedPathsList.workspaces || [];
+      workspaces = json.openedPathsList.workspaces3 || json.openedPathsList.workspaces2 || json.openedPathsList.workspaces || [];
     }
 
     let files = [];
