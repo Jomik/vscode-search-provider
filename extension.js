@@ -11,6 +11,7 @@ const homePath = GLib.getenv("HOME");
 
 let WORKSPACES = true;
 let FILES = true;
+let SEARCH_PREFIX = "code:";
 
 let vscodeSearchProvider = null;
 let storage = null;
@@ -46,8 +47,8 @@ if (desktopAppInfo !== null) {
   commandName = desktopAppInfo.get_commandline().split(' ')[0];
 }
 
-function debug(message) {		
-  global.log("VS Code Search Provider ~ " + message);		
+function debug(message) {
+  global.log("VS Code Search Provider ~ " + message);
 }
 
 function isString(value) {
@@ -70,10 +71,10 @@ function getPaths() {
   function exists(path) {
     return Gio.File.new_for_path(path).query_exists(null);
   }
-  
+
   try {
     const json = JSON.parse(GLib.file_get_contents(storage)[1]);
-    
+
     let workspaces = [];
     if (WORKSPACES) {
       workspaces = json.openedPathsList.workspaces3 || json.openedPathsList.workspaces2 || json.openedPathsList.workspaces || [];
@@ -131,6 +132,7 @@ const VSCodeSearchProvider = new Lang.Class({
   _applySettings: function() {
     WORKSPACES = this.settings.get_boolean('show-workspaces');
     FILES = this.settings.get_boolean('show-files');
+    SEARCH_PREFIX = this.settings.get_string('search-prefix');
   },
 
   getInitialResultSet: function (terms, callback, cancellable) {
@@ -139,7 +141,12 @@ const VSCodeSearchProvider = new Lang.Class({
   },
 
   getSubsearchResultSet: function (previousResults, terms, callback) {
-    const search = terms.join(" ").toLowerCase();
+    let search = terms.join(" ").toLowerCase();
+
+    if (search.startsWith(SEARCH_PREFIX)) {
+      search = search.replace(SEARCH_PREFIX, "");
+    }
+
     function containsSearch(candidate) {
       return candidate.path.toLowerCase().indexOf(search) !== -1;
     }
