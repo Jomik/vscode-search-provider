@@ -20,6 +20,7 @@ function buildPrefsWidget() {
 
   settings.bind('show-workspaces', buildable.get_object('field_workspaces'), 'active', Gio.SettingsBindFlags.DEFAULT);
   settings.bind('show-files', buildable.get_object('field_files'), 'active', Gio.SettingsBindFlags.DEFAULT);
+  settings.bind('search-prefix', buildable.get_object('search_prefix'), 'text', Gio.SettingsBindFlags.DEFAULT);
 
   box.show_all();
   return box;
