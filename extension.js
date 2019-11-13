@@ -168,18 +168,28 @@ const VSCodeSearchProvider = new Lang.Class({
     const result = this._results.filter(function (res) {
       return res.id === id;
     })[0];
-    if (desktopAppInfo !== null) {
-      try {
-        desktopAppInfo.launch([Gio.File.new_for_path(result.path)]);
-      } catch (err) {
-        Main.notifyError('Failed to launch Code', err.message);
-      }
-    } else {
-      // If we have no desktop app, fall back to the code binary
-      Util.spawn(["code", result.path]);
-    }
-  }
+    launchVSCode(result.path);
+  },
+
+  launchSearch: function () {
+    launchVSCode();
+  },
 });
+
+function launchVSCode(path) {
+  if (desktopAppInfo !== null) {
+    try {
+      const files = path ? [Gio.File.new_for_path(path)] : [];
+      desktopAppInfo.launch(files);
+    } catch (err) {
+      Main.notifyError('Failed to launch Code', err.message);
+    }
+  } else {
+    // If we have no desktop app, fall back to the code binary
+    const command = path ? ["code", path] : [code];
+    Util.spawn(command);
+  }
+}
 
 function init() {
   storage = homePath + "/.config/" + configDirName + "/storage.json";
