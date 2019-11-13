@@ -1,3 +1,4 @@
+const ByteArray = imports.byteArray;
 const Lang = imports.lang;
 const Main = imports.ui.main;
 const GLib = imports.gi.GLib;
@@ -65,7 +66,7 @@ function getPaths() {
   }
 
   try {
-    const json = JSON.parse(GLib.file_get_contents(storage)[1]);
+    const json = JSON.parse(ByteArray.toString(GLib.file_get_contents(storage)[1]));
 
     let workspaces = [];
     if (WORKSPACES) {
