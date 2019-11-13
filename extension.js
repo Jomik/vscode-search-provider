@@ -39,14 +39,6 @@ if (desktopAppInfo === null) {
   }
 }
 
-let vscodeIcon;
-let commandName = "code";
-
-if (desktopAppInfo !== null) {
-  vscodeIcon = desktopAppInfo.get_icon();
-  commandName = desktopAppInfo.get_commandline().split(' ')[0];
-}
-
 function debug(message) {
   global.log("VS Code Search Provider ~ " + message);
 }
@@ -117,19 +109,24 @@ const VSCodeSearchProvider = new Lang.Class({
   Name: 'VS Code Search Provider',
 
   _init: function () {
-    this.id = 'VSCodeProjects';
-    this.appInfo = {
-      get_name: function () { return 'vscode-search-provider'; },
-      get_icon: function () { return vscodeIcon; },
-      get_id: function () { return this.id; }
-    };
+    if (desktopAppInfo !== null) {
+      // Pretend that this is Code
+      this.appInfo = desktopAppInfo;
+    } else {
+      // Fallback to minimal app info if we haven't found the code desktop app
+      this.appInfo = {
+        get_name: function () { return 'vscode-search-provider'; },
+        get_icon: function () { },
+        get_id: function () { return 'VSCodeProjects'; }
+      };
+    }
 
     this.settings = Utils.getSettings();
     this.settings.connect('changed', Lang.bind(this, this._applySettings));
     this._applySettings();
   },
 
-  _applySettings: function() {
+  _applySettings: function () {
     WORKSPACES = this.settings.get_boolean('show-workspaces');
     FILES = this.settings.get_boolean('show-files');
     SEARCH_PREFIX = this.settings.get_string('search-prefix');
@@ -168,10 +165,19 @@ const VSCodeSearchProvider = new Lang.Class({
   },
 
   activateResult: function (id, terms) {
-    const result = this._results.filter(function(res) {
+    const result = this._results.filter(function (res) {
       return res.id === id;
     })[0];
-    Util.spawn([commandName, result.path]);
+    if (desktopAppInfo !== null) {
+      try {
+        desktopAppInfo.launch([Gio.File.new_for_path(result.path)]);
+      } catch (err) {
+        Main.notifyError('Failed to launch Code', err.message);
+      }
+    } else {
+      // If we have no desktop app, fall back to the code binary
+      Util.spawn(["code", result.path]);
+    }
   }
 });
 
