@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 
 <schemalist gettext-domain="gnome-shell-extensions">
-  <schema id="org.gnome.shell.extensions.vscode-search-provider"
-      path="/org/gnome/shell/extensions/vscode-search-provider/">
+  <schema id="org.gnome.shell.extensions.vscode-search-provider" path="/org/gnome/shell/extensions/vscode-search-provider/">
 
     <key name="show-workspaces" type="b">
       <default>true</default>
@@ -17,7 +16,7 @@
     </key>
 
     <key name="search-prefix" type="s">
-      <default>code:</default>
+      <default>"code:"</default>
       <summary>Search prefix</summary>
       <description>Search prefix used to limit results to VSCode search provider</description>
     </key>
