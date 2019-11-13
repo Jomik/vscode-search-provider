@@ -94,9 +94,9 @@ function fullPath(path) {
     : path;
 }
 
-function pathToResultObject(path, index) {
+function pathToResultObject(path) {
   return {
-    id: index + 1,
+    id: `vscode-${fullPath(path)}`,
     name: projectNameFromPath(path),
     description: fullPath(path),
     path: path,
