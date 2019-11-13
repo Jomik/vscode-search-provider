@@ -180,7 +180,7 @@ function launchVSCode(path) {
   if (desktopAppInfo !== null) {
     try {
       const files = path ? [Gio.File.new_for_path(path)] : [];
-      desktopAppInfo.launch(files);
+      desktopAppInfo.launch(files, null);
     } catch (err) {
       Main.notifyError('Failed to launch Code', err.message);
     }
