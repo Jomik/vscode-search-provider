@@ -5,8 +5,8 @@ const GLib = imports.gi.GLib;
 const Gio = imports.gi.Gio;
 const Util = imports.misc.util;
 
-const Self = imports.misc.extensionUtils.getCurrentExtension();
-const Utils = Self.imports.utils;
+const ExtensionUtils = imports.misc.extensionUtils;
+const Self = ExtensionUtils.getCurrentExtension();
 
 const homePath = GLib.getenv("HOME");
 
@@ -45,18 +45,17 @@ function debug(message) {
 }
 
 function isString(value) {
-  return typeof value === 'string' || value instanceof String;
+  return typeof value === "string" || value instanceof String;
 }
 
 function getPaths() {
   function toPath(uri) {
     if (isString(uri)) {
-      if (uri.indexOf('file://') === 0) {
+      if (uri.indexOf("file://") === 0) {
         return uri.substring(7);
       }
       return uri;
-    }
-    else {
+    } else {
       return uri.configPath;
     }
   }
@@ -66,11 +65,17 @@ function getPaths() {
   }
 
   try {
-    const json = JSON.parse(ByteArray.toString(GLib.file_get_contents(storage)[1]));
+    const json = JSON.parse(
+      ByteArray.toString(GLib.file_get_contents(storage)[1])
+    );
 
     let workspaces = [];
     if (WORKSPACES) {
-      workspaces = json.openedPathsList.workspaces3 || json.openedPathsList.workspaces2 || json.openedPathsList.workspaces || [];
+      workspaces =
+        json.openedPathsList.workspaces3 ||
+        json.openedPathsList.workspaces2 ||
+        json.openedPathsList.workspaces ||
+        [];
     }
 
     let files = [];
@@ -78,21 +83,26 @@ function getPaths() {
       files = json.openedPathsList.files2 || json.openedPathsList.files || [];
     }
 
-    return workspaces.concat(files).map(toPath).filter(exists);
+    return workspaces
+      .concat(files)
+      .map(toPath)
+      .filter(exists);
   } catch (e) {
     return [];
   }
 }
 
 function projectNameFromPath(path) {
-  let name = path.split('\\').pop().split('/').pop();
+  let name = path
+    .split("\\")
+    .pop()
+    .split("/")
+    .pop();
   return name;
 }
 
 function fullPath(path) {
-  return path.startsWith(homePath)
-    ? "~" + path.slice(homePath.length)
-    : path;
+  return path.startsWith(homePath) ? "~" + path.slice(homePath.length) : path;
 }
 
 function pathToResultObject(path) {
@@ -101,44 +111,47 @@ function pathToResultObject(path) {
     name: projectNameFromPath(path),
     description: fullPath(path),
     path: path,
-    createIcon: function (size) {
-    }
-  }
+    createIcon: function(size) {}
+  };
 }
 
 const VSCodeSearchProvider = new Lang.Class({
-  Name: 'VS Code Search Provider',
+  Name: "VS Code Search Provider",
 
-  _init: function () {
+  _init: function() {
     if (desktopAppInfo !== null) {
       // Pretend that this is Code
       this.appInfo = desktopAppInfo;
     } else {
       // Fallback to minimal app info if we haven't found the code desktop app
       this.appInfo = {
-        get_name: function () { return 'vscode-search-provider'; },
-        get_icon: function () { },
-        get_id: function () { return 'VSCodeProjects'; }
+        get_name: function() {
+          return "vscode-search-provider";
+        },
+        get_icon: function() {},
+        get_id: function() {
+          return "VSCodeProjects";
+        }
       };
     }
 
-    this.settings = Utils.getSettings();
-    this.settings.connect('changed', Lang.bind(this, this._applySettings));
+    this.settings = ExtensionUtils.getSettings();
+    this.settings.connect("changed", Lang.bind(this, this._applySettings));
     this._applySettings();
   },
 
-  _applySettings: function () {
-    WORKSPACES = this.settings.get_boolean('show-workspaces');
-    FILES = this.settings.get_boolean('show-files');
-    SEARCH_PREFIX = this.settings.get_string('search-prefix');
+  _applySettings: function() {
+    WORKSPACES = this.settings.get_boolean("show-workspaces");
+    FILES = this.settings.get_boolean("show-files");
+    SEARCH_PREFIX = this.settings.get_string("search-prefix");
   },
 
-  getInitialResultSet: function (terms, callback, cancellable) {
+  getInitialResultSet: function(terms, callback, cancellable) {
     this._results = getPaths().map(pathToResultObject);
     this.getSubsearchResultSet(undefined, terms, callback);
   },
 
-  getSubsearchResultSet: function (previousResults, terms, callback) {
+  getSubsearchResultSet: function(previousResults, terms, callback) {
     let search = terms.join(" ").toLowerCase();
 
     if (search.startsWith(SEARCH_PREFIX)) {
@@ -150,31 +163,31 @@ const VSCodeSearchProvider = new Lang.Class({
     }
     function getId(candidate) {
       return candidate.id;
-    };
+    }
     callback(this._results.filter(containsSearch).map(getId));
   },
 
-  getResultMetas: function (resultIds, callback) {
-    const resultMetas = this._results.filter(function (res) {
+  getResultMetas: function(resultIds, callback) {
+    const resultMetas = this._results.filter(function(res) {
       return resultIds.indexOf(res.id) !== -1;
     });
     callback(resultMetas);
   },
 
-  filterResults: function (results, max) {
+  filterResults: function(results, max) {
     return results.slice(0, max);
   },
 
-  activateResult: function (id, terms) {
-    const result = this._results.filter(function (res) {
+  activateResult: function(id, terms) {
+    const result = this._results.filter(function(res) {
       return res.id === id;
     })[0];
     launchVSCode(result.path);
   },
 
-  launchSearch: function () {
+  launchSearch: function() {
     launchVSCode();
-  },
+  }
 });
 
 function launchVSCode(path) {
@@ -183,7 +196,7 @@ function launchVSCode(path) {
       const files = path ? [Gio.File.new_for_path(path)] : [];
       desktopAppInfo.launch(files, null);
     } catch (err) {
-      Main.notifyError('Failed to launch Code', err.message);
+      Main.notifyError("Failed to launch Code", err.message);
     }
   } else {
     // If we have no desktop app, fall back to the code binary
@@ -199,13 +212,17 @@ function init() {
 function enable() {
   if (!vscodeSearchProvider) {
     vscodeSearchProvider = new VSCodeSearchProvider();
-    Main.overview.viewSelector._searchResults._registerProvider(vscodeSearchProvider);
+    Main.overview.viewSelector._searchResults._registerProvider(
+      vscodeSearchProvider
+    );
   }
 }
 
 function disable() {
   if (vscodeSearchProvider) {
-    Main.overview.viewSelector._searchResults._unregisterProvider(vscodeSearchProvider);
+    Main.overview.viewSelector._searchResults._unregisterProvider(
+      vscodeSearchProvider
+    );
     vscodeSearchProvider = null;
   }
 }
