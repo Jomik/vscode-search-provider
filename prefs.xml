@@ -1,111 +1,82 @@
 <?xml version="1.0"?>
-
 <interface domain="vscode-search-provider">
-
-<object class="GtkNotebook" id="prefs_widget">
-  <property name="expand">true</property>
-
-
-	<child>
-		<object class="GtkGrid">
-			<property name="margin">18</property>
-			<property name="row-spacing">18</property>
-			<property name="row-homogeneous">false</property>
-			<property name="orientation">vertical</property>
-
-			<child>
-				<object class="GtkVBox">
-				<property name="spacing">6</property>
-
-					<child>
-						<object class="GtkBox">
-							<property name="spacing">12</property>
-							<child>
-								<object class="GtkLabel">
-									<property name="label" translatable="yes">Search results</property>
-									<property name="hexpand">true</property>
-									<property name="halign">1</property>
-									<attributes>
-										<attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-									</attributes>
-								</object>
-							</child>
-							<child>
-								<object class="GtkLabel" id="version_info">
-									<property name="label">Version info placeholder</property>
-									<property name="hexpand">false</property>
-									<property name="halign">1</property>
-								</object>
-							</child>
-						</object>
-					</child>
-
-					<child>
-						<object class="GtkBox">
-							<property name="margin-left">12</property>
-							<property name="spacing">12</property>
-							<child>
-								<object class="GtkLabel">
-									<property translatable="no" name="label">Show workspaces</property>
-									<property name="hexpand">true</property>
-									<property name="halign">1</property>
-								</object>
-							</child>
-							<child>
-								<object class="GtkSwitch" id="field_workspaces">
-									<property name="active">true</property>
-								</object>
-							</child>
-						</object>
-					</child>
-
-					<child>
-						<object class="GtkBox">
-							<property name="margin-left">12</property>
-							<property name="spacing">12</property>
-							<child>
-								<object class="GtkLabel">
-									<property translatable="no" name="label">Show files</property>
-									<property name="hexpand">true</property>
-									<property name="halign">1</property>
-								</object>
-							</child>
-							<child>
-								<object class="GtkSwitch" id="field_files">
-									<property name="active">true</property>
-								</object>
-							</child>
-						</object>
-					</child>
-
-					<child>
-						<object class="GtkBox">
-							<property name="margin-left">12</property>
-							<property name="spacing">12</property>
-							<child>
-								<object class="GtkLabel">
-									<property translatable="no" name="label">Search prefix</property>
-									<property name="hexpand">true</property>
-									<property name="halign">1</property>
-								</object>
-							</child>
-							<child>
-								<object class="GtkEntry" id="search_prefix">
-									<property name="text">code:</property>
-								</object>
-							</child>
-						</object>
-					</child>
-				</object>
-			</child>
-		</object>
-	</child>
-
-	<child type="tab">
-		<object class="GtkLabel">
-			<property name="label" translatable="yes">Basic settings</property>
-		</object>
-	</child>
-</object>
-
+  <object class="GtkNotebook" id="prefs_widget">
+    <property name="expand">true</property>
+    <child>
+      <object class="GtkGrid">
+        <property name="margin">18</property>
+        <property name="row-spacing">18</property>
+        <property name="row-homogeneous">false</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkVBox">
+            <property name="spacing">6</property>
+            <child>
+              <object class="GtkBox">
+                <property name="spacing">12</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label" translatable="yes">Search results</property>
+                    <property name="hexpand">true</property>
+                    <property name="halign">1</property>
+                    <attributes>
+                      <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                    </attributes>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="version_info">
+                    <property name="label">Version info placeholder</property>
+                    <property name="hexpand">false</property>
+                    <property name="halign">1</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="margin-left">12</property>
+                <property name="spacing">12</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property translatable="no" name="label">Show workspaces</property>
+                    <property name="hexpand">true</property>
+                    <property name="halign">1</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkSwitch" id="field_workspaces">
+                    <property name="active">true</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="margin-left">12</property>
+                <property name="spacing">12</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property translatable="no" name="label">Show files</property>
+                    <property name="hexpand">true</property>
+                    <property name="halign">1</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkSwitch" id="field_files">
+                    <property name="active">true</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child type="tab">
+      <object class="GtkLabel">
+        <property name="label" translatable="yes">Basic settings</property>
+      </object>
+    </child>
+  </object>
 </interface>

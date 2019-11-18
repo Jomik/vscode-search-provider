@@ -1,24 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
-
 <schemalist gettext-domain="gnome-shell-extensions">
   <schema id="org.gnome.shell.extensions.vscode-search-provider" path="/org/gnome/shell/extensions/vscode-search-provider/">
-
     <key name="show-workspaces" type="b">
       <default>true</default>
       <summary>Display workspaces in search results</summary>
       <description>Whether to include workspaces that have been opened in VSCode in the search results provided</description>
     </key>
-
     <key name="show-files" type="b">
       <default>true</default>
       <summary>Display files in search results</summary>
       <description>Whether to include files that have been opened in VSCode in the search results provided</description>
-    </key>
-
-    <key name="search-prefix" type="s">
-      <default>"code:"</default>
-      <summary>Search prefix</summary>
-      <description>Search prefix used to limit results to VSCode search provider</description>
     </key>
   </schema>
 </schemalist>

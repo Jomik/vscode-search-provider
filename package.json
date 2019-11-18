@@ -12,6 +12,6 @@
   },
   "scripts": {
     "compile": "tsc",
-    "format": "prettier *.ts *.json"
+    "format": "prettier *.ts *.json *.js"
   }
 }
