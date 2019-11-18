@@ -1,0 +1,17 @@
+{
+  "name": "vscode-search-provider",
+  "version": "13",
+  "description": "Provide recent VSCode projects as search results in overview",
+  "repository": "https://github.com/jomik/vscode-search-provider.git",
+  "author": "Jonas Holst Damtoft",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "prettier": "^1.19.1",
+    "typescript": "^3.7.2"
+  },
+  "scripts": {
+    "compile": "tsc",
+    "format": "prettier *.ts *.json"
+  }
+}
