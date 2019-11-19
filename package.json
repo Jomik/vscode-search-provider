@@ -12,6 +12,7 @@
   },
   "scripts": {
     "compile": "tsc",
-    "format": "prettier *.ts *.json *.js"
+    "format": "prettier *.ts *.json *.js",
+    "package": "gnome-extensions pack --extra-source utils.js --extra-source prefs.xml"
   }
 }

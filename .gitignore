@@ -3,3 +3,6 @@
 
 # Compiled JS extension
 /extension.js
+
+# Packaged extension
+/*.shell-extension.zip
