@@ -2,7 +2,7 @@
   "uuid": "vscode-search-provider@jomik.org",
   "name": "VSCode Search Provider",
   "description": "Provide recent VSCode projects as search results in overview",
-  "shell-version": ["3.24", "3.28", "3.30"],
+  "shell-version": ["3.34"],
   "url": "https://github.com/jomik/vscode-search-provider",
   "version": 13,
   "settings-schema": "org.gnome.shell.extensions.vscode-search-provider"
