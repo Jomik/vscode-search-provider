@@ -37,13 +37,11 @@ function init() {}
 function buildPrefsWidget() {
   const settings = ExtensionUtils.getSettings();
   const buildable = new Gtk.Builder();
-  buildable.add_from_file(Self.dir.get_path() + "/prefs.xml");
+  buildable.add_from_file(Self.dir.get_child("prefs.xml").get_path());
   const box = buildable.get_object("prefs_widget");
 
   const version_label = buildable.get_object("version_info");
-  version_label.set_text(
-    "[VSCode-Search-Provider v" + Self.metadata.version + "]"
-  );
+  version_label.set_text(`[VSCode-Search-Provider v${Self.metadata.version}]`);
 
   settings.bind(
     "show-workspaces",
