@@ -312,6 +312,7 @@ const findVSCodeRecentItems = (
 
     const items: MutableRecentItems = {};
     for (const item of recentItems) {
+      // eslint-disable-next-line immutable/no-mutation
       items[item.id] = item;
     }
     resolve(items);
@@ -320,18 +321,21 @@ const findVSCodeRecentItems = (
 /**
  * The registered provider
  */
+// eslint-disable-next-line immutable/no-let
 let registeredProvider: "unregistered" | "registering" | SearchProvider =
   "unregistered";
 
 /**
  * Initialize this extension.
  */
-function init() {}
+// eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/no-empty-function
+function init(): void {}
 
 /**
  * Enable this extension.
  */
-function enable() {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function enable(): void {
   if (!registeredProvider) {
     const vscode = findVSCode();
     if (vscode) {
@@ -371,7 +375,8 @@ function enable() {
 /**
  * Disable this extension.
  */
-function disable() {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function disable(): void {
   if (typeof registeredProvider !== "string") {
     Main.overview.viewSelector._searchResults._unregisterProvider(
       registeredProvider

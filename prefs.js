@@ -30,8 +30,10 @@ const Gio = imports.gi.Gio;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Self = ExtensionUtils.getCurrentExtension();
 
+// eslint-disable-next-line no-unused-vars
 function init() {}
 
+// eslint-disable-next-line no-unused-vars
 function buildPrefsWidget() {
   const settings = ExtensionUtils.getSettings();
   const buildable = new Gtk.Builder();
