@@ -110,14 +110,7 @@ interface RecentItem {
   readonly kind: RecentItemKind;
 }
 
-/**
- * A map of IDs to recent items.
- */
-interface MutableRecentItems {
-  [key: string]: RecentItem;
-}
-
-type RecentItems = Readonly<MutableRecentItems>;
+type RecentItems = ReadonlyMap<string, RecentItem>;
 
 /**
  * Lookup recent items by their identifiers.
@@ -130,24 +123,7 @@ const lookupRecentItems = (
   items: RecentItems,
   identifiers: ReadonlyArray<string>
 ): RecentItem[] =>
-  identifiers
-    .filter(id => Object.prototype.hasOwnProperty.call(items, id))
-    .map(id => items[id]);
-
-/**
- * Lookup a single recent item.
- *
- * @param projects Recent items
- * @param identifier The item identifier to look for
- * @returns The item with `identifier` or `null`
- */
-const lookupRecentItem = (
-  items: RecentItems,
-  identifier: string
-): RecentItem | null =>
-  Object.prototype.hasOwnProperty.call(items, identifier)
-    ? items[identifier]
-    : null;
+  Array.from(items.values()).filter(item => identifiers.includes(item.id));
 
 /**
  * Whether an item matches all of the given terms.
@@ -237,7 +213,11 @@ const createProvider = (
   appInfo: vscode,
   getInitialResultSet: (terms, callback): void =>
     callback(
-      findMatchingItems(Object.values(items), terms, getEnabledKinds(settings))
+      findMatchingItems(
+        Array.from(items.values()),
+        terms,
+        getEnabledKinds(settings)
+      )
     ),
   getSubsearchResultSet: (current, terms, callback): void =>
     callback(
@@ -251,7 +231,7 @@ const createProvider = (
     callback(lookupRecentItems(items, ids).map(resultMetaOfRecentItem(vscode))),
   launchSearch: (): void => launchVSCodeInShell(vscode),
   activateResult: (id): void => {
-    const item = lookupRecentItem(items, id);
+    const item = items.get(id);
     if (item) {
       launchVSCodeInShell(vscode, [item.file]);
     }
@@ -310,12 +290,7 @@ const findVSCodeRecentItems = (
       .map(createRecentItem("workspace"))
       .concat(recentFileURIs.map(createRecentItem("file")));
 
-    const items: MutableRecentItems = {};
-    for (const item of recentItems) {
-      // eslint-disable-next-line immutable/no-mutation
-      items[item.id] = item;
-    }
-    resolve(items);
+    resolve(new Map(recentItems.map(item => [item.id, item])));
   });
 
 /**
