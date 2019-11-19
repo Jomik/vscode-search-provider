@@ -50,10 +50,16 @@ interface CodeAppInfo {
 
 const findVSCode = (): CodeAppInfo | null => {
   const candidates = [
-    ["code.desktop", "Code"],
-    ["visual-studio-code.desktop", "Code"],
+    // Standard Code OSS build on Arch Linux.
+    ["code-oss.desktop", "Code - OSS"],
+    // Code OSS build on Solus Linux, see <https://github.com/Jomik/vscode-search-provider/pull/10>
+    ["vscode-oss.desktop", "Code - OSS"],
+    // Offical VSCode snap, see <https://github.com/Jomik/vscode-search-provider/pull/14>
+    // and <https://snapcraft.io/code>
     ["code_code.desktop", "Code"],
-    ["vscode-oss.desktop", "Code - OSS"]
+    // TODO: Figure out what systems these desktop files are from.
+    ["code.desktop", "Code"],
+    ["visual-studio-code.desktop", "Code"]
   ];
   for (const [desktopId, configDirectoryName] of candidates) {
     const app = Gio.DesktopAppInfo.new(desktopId);
