@@ -26,6 +26,15 @@ const St = imports.gi.St;
 
 const Main = imports.ui.main;
 const ExtensionUtils = imports.misc.extensionUtils;
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const Self = ExtensionUtils.getCurrentExtension()!;
+
+/**
+ * Log a message from this extension.
+ *
+ * @param message The message to log
+ */
+const l = (message: string): void => log(`${Self.metadata.name}: ${message}`);
 
 interface CodeAppInfo {
   /**
@@ -49,7 +58,7 @@ const findVSCode = (): CodeAppInfo | null => {
   for (const [desktopId, configDirectoryName] of candidates) {
     const app = Gio.DesktopAppInfo.new(desktopId);
     if (app) {
-      log(`Found code via ${desktopId}`);
+      l(`Found code at desktop app ${desktopId}`);
       return {
         app,
         configDirectoryName
@@ -311,7 +320,7 @@ function init(): void {}
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function enable(): void {
-  if (!registeredProvider) {
+  if (registeredProvider === "unregistered") {
     const vscode = findVSCode();
     if (vscode) {
       registeredProvider = "registering";
@@ -356,6 +365,7 @@ function disable(): void {
     Main.overview.viewSelector._searchResults._unregisterProvider(
       registeredProvider
     );
-    registeredProvider = "unregistered";
   }
+  // Make sure to always switch back to unregistered, so that the user can re-enable it.
+  registeredProvider = "unregistered";
 }
