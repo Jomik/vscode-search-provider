@@ -219,6 +219,9 @@ const createProvider = (
   settings: imports.gi.Gio.GSettings,
   items: RecentItems
 ): SearchProvider => ({
+  id: Self.uuid,
+  canLaunchSearch: true,
+  isRemoteProvider: false,
   appInfo: vscode,
   getInitialResultSet: (terms, callback): void =>
     callback(
