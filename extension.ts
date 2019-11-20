@@ -319,6 +319,35 @@ let registeredProvider: "unregistered" | "registering" | SearchProvider =
 function init(): void {}
 
 /**
+ * Register a search provider for VSCode.
+ *
+ * @param vscode The VSCode app
+ * @returns A promise which resolves once the provider is registered.
+ */
+const registerProvider = (vscode: CodeAppInfo): Promise<void> => {
+  registeredProvider = "registering";
+  return findVSCodeRecentItems(vscode.configDirectoryName)
+    .then(items => {
+      // If the user hasn't disabled the extension meanwhile create the
+      // search provider and registered it, both in our global variable
+      // and for gnome shell.
+      if (registeredProvider === "registering") {
+        registeredProvider = createProvider(
+          vscode.app,
+          ExtensionUtils.getSettings(),
+          items
+        );
+        Main.overview.viewSelector._searchResults._registerProvider(
+          registeredProvider
+        );
+      }
+    })
+    .catch(error =>
+      Main.notifyError("Failed to get recent VSCode entries", error.message)
+    );
+};
+
+/**
  * Enable this extension.
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -326,30 +355,7 @@ function enable(): void {
   if (registeredProvider === "unregistered") {
     const vscode = findVSCode();
     if (vscode) {
-      registeredProvider = "registering";
-      findVSCodeRecentItems(vscode.configDirectoryName).then(
-        items => {
-          // If the user hasn't disabled the extension meanwhile create the
-          // search provider and registered it, both in our global variable
-          // and for gnome shell.
-          if (registeredProvider === "registering") {
-            registeredProvider = createProvider(
-              vscode.app,
-              ExtensionUtils.getSettings(),
-              items
-            );
-            Main.overview.viewSelector._searchResults._registerProvider(
-              registeredProvider
-            );
-          }
-        },
-        error => {
-          Main.notifyError(
-            "Failed to get recent VSCode entries",
-            error.message
-          );
-        }
-      );
+      registerProvider(vscode);
     } else {
       Main.notifyError(
         "VSCode not found",
