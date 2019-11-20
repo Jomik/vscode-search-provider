@@ -1,0 +1,23 @@
+{
+  "name": "vscode-search-provider",
+  "version": "13",
+  "description": "Provide recent VSCode projects as search results in overview",
+  "repository": "https://github.com/jomik/vscode-search-provider.git",
+  "author": "Jonas Holst Damtoft",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.8.0",
+    "@typescript-eslint/parser": "^2.8.0",
+    "eslint": "^6.6.0",
+    "eslint-plugin-immutable": "^1.0.0",
+    "prettier": "^1.19.1",
+    "typescript": "^3.7.2"
+  },
+  "scripts": {
+    "lint": "eslint *.ts prefs.js",
+    "compile": "tsc",
+    "format": "prettier *.ts *.json *.js .eslintrc.json",
+    "package": "gnome-extensions pack --extra-source utils.js --extra-source prefs.xml"
+  }
+}

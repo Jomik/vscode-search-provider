@@ -1,0 +1,8 @@
+# Node libraries
+/node_modules/
+
+# Compiled JS extension
+/extension.js
+
+# Packaged extension
+/*.shell-extension.zip
