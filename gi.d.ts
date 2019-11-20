@@ -20,9 +20,11 @@
 
 /* eslint-disable @typescript-eslint/camelcase */
 
-declare interface ByteArray {}
-
 declare namespace imports {
+  class ByteArray {
+    private constructor();
+  }
+
   namespace byteArray {
     function toString(array: ByteArray): string;
   }
