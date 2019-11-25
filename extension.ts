@@ -148,8 +148,9 @@ const lookupRecentItems = (
  */
 const recentItemMatchesTerms = (
   item: RecentItem,
-  terms: ReadonlyArray<string>
+  terms: ReadonlyArray<string> | null
 ): boolean =>
+  !!terms &&
   terms.every(t => item.name.includes(t) || item.readablePath.includes(t));
 
 /**
@@ -158,11 +159,11 @@ const recentItemMatchesTerms = (
  * @param items Recent items
  * @param terms Terms to look for
  * @param kinds Item kinds to filter by
- * @returns The IDs of all matching items
+ * @returns The IDs of all matching items, or an empty array if terms is empty
  */
 const findMatchingItems = (
   items: ReadonlyArray<RecentItem>,
-  terms: ReadonlyArray<string>,
+  terms: ReadonlyArray<string> | null,
   kinds: ReadonlyArray<RecentItemKind>
 ): string[] =>
   items
@@ -185,6 +186,43 @@ const getEnabledKinds = (
     kinds.push("file");
   }
   return kinds;
+};
+
+/**
+ * Get the search prefix set in the given settings.
+ */
+const getPrefix = (settings: imports.gi.Gio.GSettings): string =>
+  settings.get_string("search-prefix");
+
+/**
+ * Check search terms against a user-specified search prefix.
+ *
+ * `terms` match the given `prefix` if the prefix is empty or if the first term
+ * starts with `prefix`.  If terms match the prefix return `terms` with `prefix`
+ * removed from the first term, otherwise return `null`.
+ *
+ * @param terms
+ * @param prefix
+ * @returns `terms` without `prefix`, or null if terms didn't match prefix
+ */
+const checkAndRemovePrefix = (
+  terms: ReadonlyArray<string>,
+  prefix: string | null | undefined
+): ReadonlyArray<string> | null => {
+  if (!prefix) {
+    // There's no prefix so just return the terms unchanged
+    return terms;
+  } else {
+    if (0 < terms.length && terms[0].startsWith(prefix)) {
+      // The prefix matches, so remove it from the first term
+      const head = terms[0].substring(prefix.length);
+      const tail = terms.slice(1);
+      return head ? [head, ...tail] : tail;
+    } else {
+      // Prefix doesn't match
+      return null;
+    }
+  }
 };
 
 /**
@@ -233,7 +271,7 @@ const createProvider = (
     callback(
       findMatchingItems(
         Array.from(items.values()),
-        terms,
+        checkAndRemovePrefix(terms, getPrefix(settings)),
         getEnabledKinds(settings)
       )
     ),
@@ -241,7 +279,7 @@ const createProvider = (
     callback(
       findMatchingItems(
         lookupRecentItems(items, current),
-        terms,
+        checkAndRemovePrefix(terms, getPrefix(settings)),
         getEnabledKinds(settings)
       )
     ),
