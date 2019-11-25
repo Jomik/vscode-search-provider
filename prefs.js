@@ -55,6 +55,12 @@ function buildPrefsWidget() {
     "active",
     Gio.SettingsBindFlags.DEFAULT
   );
+  settings.bind(
+    "search-prefix",
+    buildable.get_object("search_prefix"),
+    "text",
+    Gio.SettingsBindFlags.DEFAULT
+  );
 
   box.show_all();
   return box;

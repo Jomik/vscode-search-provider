@@ -11,5 +11,10 @@
       <summary>Display files in search results</summary>
       <description>Whether to include files that have been opened in VSCode in the search results provided</description>
     </key>
+    <key name="search-prefix" type="s">
+      <default>"code:"</default>
+      <summary>Search prefix</summary>
+      <description>Search prefix used to limit results to VSCode search provider</description>
+    </key>
   </schema>
 </schemalist>
