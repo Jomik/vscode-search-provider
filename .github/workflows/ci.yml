@@ -15,5 +15,3 @@ jobs:
       - run: yarn compile:schemas
       - run: yarn lint --max-warnings 0
       - run: yarn format --check
-      # Package extension (inside a docker container to use the gnome-extensions tool)
-      - run: docker run --rm -v "${GITHUB_WORKSPACE}:/github" ubuntu:rolling /bin/sh -c 'apt-get update -qq > /dev/null && DEBIAN_FRONTEND=noninteractive apt-get install -qq -y gnome-shell yarnpkg > /dev/null && cd /github && yarnpkg package'
