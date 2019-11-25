@@ -1,0 +1,17 @@
+name: CI
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+      - name: Install glib-compile-schemas
+        run: sudo apt-get update -qq && DEBIAN_FRONTEND=noninteractive sudo -E apt-get install -qq -y libglib2.0-bin
+      - run: yarn install
+      - run: yarn compile
+      - run: yarn compile:schemas
+      - run: yarn lint --max-warnings 0
+      - run: yarn format --check
