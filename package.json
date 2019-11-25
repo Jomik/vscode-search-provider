@@ -17,6 +17,7 @@
   "scripts": {
     "lint": "eslint *.ts prefs.js",
     "compile": "tsc",
+    "compile:schemas": "glib-compile-schemas --strict schemas/",
     "format": "prettier *.ts *.json prefs.js .eslintrc.json",
     "package": "gnome-extensions pack --extra-source utils.js --extra-source prefs.xml"
   }

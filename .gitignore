@@ -4,5 +4,8 @@
 # Compiled JS extension
 /extension.js
 
+# Compiled schema file
+/schemas/*.compiled
+
 # Packaged extension
 /*.shell-extension.zip
