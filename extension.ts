@@ -29,12 +29,22 @@ const ExtensionUtils = imports.misc.extensionUtils;
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const Self = ExtensionUtils.getCurrentExtension()!;
 
-/**
- * Log a message from this extension.
- *
- * @param message The message to log
- */
-const l = (message: string): void => log(`${Self.metadata.name}: ${message}`);
+const l = {
+  /**
+   * Log a message from this extension.
+   *
+   * @param message The message to log
+   */
+  info: (message: string): void => log(`${Self.metadata.name}: ${message}`),
+
+  /**
+   * Log an error message from this extension.
+   *
+   * @param message The message to log
+   */
+  error: (message: string): void =>
+    logError(`${Self.metadata.name}: ${message}`)
+};
 
 interface CodeAppInfo {
   /**
@@ -64,7 +74,7 @@ const findVSCode = (): CodeAppInfo | null => {
   for (const [desktopId, configDirectoryName] of candidates) {
     const app = Gio.DesktopAppInfo.new(desktopId);
     if (app) {
-      l(`Found code at desktop app ${desktopId}`);
+      l.info(`Found code at desktop app ${desktopId}`);
       return {
         app,
         configDirectoryName
@@ -89,6 +99,8 @@ const launchVSCodeInShell = (
   try {
     vscode.launch(files || [], null);
   } catch (err) {
+    const stack = err.stack || "<no stacktrace>";
+    l.error(`Failed to lauch VSCode: ${err.message}\n${stack}`);
     Main.notifyError("Failed to launch VSCode", err.message);
   }
 };
@@ -386,9 +398,13 @@ const registerProvider = (vscode: CodeAppInfo): Promise<void> => {
         );
       }
     })
-    .catch(error =>
-      Main.notifyError("Failed to get recent VSCode entries", error.message)
-    );
+    .catch(error => {
+      const stack = error.stack || "<no stacktrace>";
+      l.error(
+        `Failed to get recent VSCode entries: ${error.message}\n${stack}`
+      );
+      Main.notifyError("Failed to get recent VSCode entries", error.message);
+    });
 };
 
 /**
