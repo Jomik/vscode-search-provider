@@ -69,6 +69,7 @@ const findVSCode = (): CodeAppInfo | null => {
     ["code_code.desktop", "Code"],
     // VSCodium support, Free/Libre Open Source Software Binaries of VSCode. 
     // See <https://vscodium.com/> for explanations
+    // PR: https://github.com/Jomik/vscode-search-provider/pull/30
     ["codium.desktop", "VSCodium"],
     // TODO: Figure out what systems these desktop files are from.
     ["code.desktop", "Code"],
