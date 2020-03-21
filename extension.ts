@@ -67,6 +67,10 @@ const findVSCode = (): CodeAppInfo | null => {
     // Offical VSCode snap, see <https://github.com/Jomik/vscode-search-provider/pull/14>
     // and <https://snapcraft.io/code>
     ["code_code.desktop", "Code"],
+    // VSCodium support, Free/Libre Open Source Software Binaries of VSCode. 
+    // See <https://vscodium.com/> for explanations
+    // PR: https://github.com/Jomik/vscode-search-provider/pull/30
+    ["codium.desktop", "VSCodium"],
     // TODO: Figure out what systems these desktop files are from.
     ["code.desktop", "Code"],
     ["visual-studio-code.desktop", "Code"]
