@@ -43,7 +43,7 @@ const l = {
    * @param message The message to log
    */
   error: (message: string): void =>
-    logError(`${Self.metadata.name}: ${message}`)
+    logError(`${Self.metadata.name}: ${message}`),
 };
 
 interface CodeAppInfo {
@@ -73,7 +73,7 @@ const findVSCode = (): CodeAppInfo | null => {
     ["codium.desktop", "VSCodium"],
     // TODO: Figure out what systems these desktop files are from.
     ["code.desktop", "Code"],
-    ["visual-studio-code.desktop", "Code"]
+    ["visual-studio-code.desktop", "Code"],
   ];
   for (const [desktopId, configDirectoryName] of candidates) {
     const app = Gio.DesktopAppInfo.new(desktopId);
@@ -81,7 +81,7 @@ const findVSCode = (): CodeAppInfo | null => {
       l.info(`Found code at desktop app ${desktopId}`);
       return {
         app,
-        configDirectoryName
+        configDirectoryName,
       };
     }
   }
@@ -154,7 +154,7 @@ const lookupRecentItems = (
   items: RecentItems,
   identifiers: ReadonlyArray<string>
 ): RecentItem[] =>
-  Array.from(items.values()).filter(item => identifiers.includes(item.id));
+  Array.from(items.values()).filter((item) => identifiers.includes(item.id));
 
 /**
  * Whether an item matches all of the given terms.
@@ -167,7 +167,7 @@ const recentItemMatchesTerms = (
   terms: ReadonlyArray<string> | null
 ): boolean =>
   !!terms &&
-  terms.every(t => item.name.includes(t) || item.readablePath.includes(t));
+  terms.every((t) => item.name.includes(t) || item.readablePath.includes(t));
 
 /**
  * Find all items which match all of the given terms and have a kind contained in `kinds`.
@@ -184,9 +184,9 @@ const findMatchingItems = (
 ): string[] =>
   items
     .filter(
-      item => recentItemMatchesTerms(item, terms) && kinds.includes(item.kind)
+      (item) => recentItemMatchesTerms(item, terms) && kinds.includes(item.kind)
     )
-    .map(item => item.id);
+    .map((item) => item.id);
 
 /**
  * Get a list of all enabled item kinds from the given settings.
@@ -258,12 +258,12 @@ const resultMetaOfRecentItem = (vscode: imports.gi.Gio.DesktopAppInfo) => (
       return new St.Icon({
         gicon,
         // eslint-disable-next-line @typescript-eslint/camelcase
-        icon_size: size
+        icon_size: size,
       });
     } else {
       return null;
     }
-  }
+  },
 });
 
 /**
@@ -308,7 +308,7 @@ const createProvider = (
       launchVSCodeInShell(vscode, [item.file]);
     }
   },
-  filterResults: (results, max): string[] => results.slice(0, max)
+  filterResults: (results, max): string[] => results.slice(0, max),
 });
 
 /**
@@ -328,7 +328,7 @@ const createRecentItem = (kind: RecentItemKind) => (
     // TODO: Test what this parse name thing actually is
     readablePath: file.get_parse_name(),
     kind,
-    file
+    file,
   };
 };
 
@@ -341,7 +341,7 @@ const createRecentItem = (kind: RecentItemKind) => (
 const findVSCodeRecentItems = (
   configDirectoryName: string
 ): Promise<RecentItems> =>
-  new Promise(resolve => {
+  new Promise((resolve) => {
     // TODO: Use async load contents for async IO, to avoid blocking the shell
     const contents = Gio.File.new_for_path(GLib.get_user_config_dir())
       .get_child(configDirectoryName)
@@ -362,7 +362,7 @@ const findVSCodeRecentItems = (
       .map(createRecentItem("workspace"))
       .concat(recentFileURIs.map(createRecentItem("file")));
 
-    resolve(new Map(recentItems.map(item => [item.id, item])));
+    resolve(new Map(recentItems.map((item) => [item.id, item])));
   });
 
 /**
@@ -387,7 +387,7 @@ function init(): void {}
 const registerProvider = (vscode: CodeAppInfo): Promise<void> => {
   registeredProvider = "registering";
   return findVSCodeRecentItems(vscode.configDirectoryName)
-    .then(items => {
+    .then((items) => {
       // If the user hasn't disabled the extension meanwhile create the
       // search provider and registered it, both in our global variable
       // and for gnome shell.
@@ -402,7 +402,7 @@ const registerProvider = (vscode: CodeAppInfo): Promise<void> => {
         );
       }
     })
-    .catch(error => {
+    .catch((error) => {
       const stack = error.stack || "<no stacktrace>";
       l.error(
         `Failed to get recent VSCode entries: ${error.message}\n${stack}`
