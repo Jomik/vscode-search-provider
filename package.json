@@ -11,7 +11,7 @@
     "@typescript-eslint/parser": "^2.8.0",
     "eslint": "^6.6.0",
     "eslint-plugin-immutable": "^1.0.0",
-    "prettier": "^1.19.1",
+    "prettier": "^2.0.5",
     "typescript": "^3.7.2"
   },
   "scripts": {
