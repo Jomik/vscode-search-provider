@@ -19,13 +19,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-const ByteArray = imports.byteArray;
-const GLib = imports.gi.GLib;
-const Gio = imports.gi.Gio;
-const St = imports.gi.St;
+import ByteArray = imports.byteArray;
+import GLib = imports.gi.GLib;
+import Gio = imports.gi.Gio;
+import St = imports.gi.St;
 
-const Main = imports.ui.main;
-const ExtensionUtils = imports.misc.extensionUtils;
+import Main = imports.ui.main;
+import ExtensionUtils = imports.misc.extensionUtils;
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const Self = ExtensionUtils.getCurrentExtension()!;
 
@@ -50,7 +50,7 @@ interface CodeAppInfo {
   /**
    * The desktop app providing code.
    */
-  readonly app: imports.gi.Gio.DesktopAppInfo;
+  readonly app: Gio.DesktopAppInfo;
 
   /**
    * The name of the configuration directory of this code app.
@@ -96,10 +96,7 @@ const findVSCode = (): CodeAppInfo | null => {
  * @param vscode The vscode app
  * @param files The file to launch vscode with
  */
-const launchVSCodeInShell = (
-  vscode: imports.gi.Gio.AppInfo,
-  files?: imports.gi.Gio.File[]
-): void => {
+const launchVSCodeInShell = (vscode: Gio.AppInfo, files?: Gio.File[]): void => {
   try {
     vscode.launch(files || [], null);
   } catch (err) {
@@ -133,7 +130,7 @@ interface RecentItem {
   /**
    * The absolute path of this item.
    */
-  readonly file: imports.gi.Gio.File;
+  readonly file: Gio.File;
 
   /**
    * The kind of this item.
@@ -192,7 +189,7 @@ const findMatchingItems = (
  * Get a list of all enabled item kinds from the given settings.
  */
 const getEnabledKinds = (
-  settings: imports.gi.Gio.GSettings
+  settings: Gio.GSettings
 ): ReadonlyArray<RecentItemKind> => {
   const kinds: RecentItemKind[] = [];
   if (settings.get_boolean("show-workspaces")) {
@@ -207,7 +204,7 @@ const getEnabledKinds = (
 /**
  * Get the search prefix set in the given settings.
  */
-const getPrefix = (settings: imports.gi.Gio.GSettings): string =>
+const getPrefix = (settings: Gio.GSettings): string =>
   settings.get_string("search-prefix");
 
 /**
@@ -246,13 +243,13 @@ const checkAndRemovePrefix = (
  *
  * @param vscode The vscode app providing the icon
  */
-const resultMetaOfRecentItem = (vscode: imports.gi.Gio.DesktopAppInfo) => (
+const resultMetaOfRecentItem = (vscode: Gio.DesktopAppInfo) => (
   item: RecentItem
 ): ResultMeta => ({
   id: item.id,
   name: item.name,
   description: item.readablePath,
-  createIcon: (size): imports.gi.St.Icon | null => {
+  createIcon: (size): St.Icon | null => {
     const gicon = vscode.get_icon();
     if (gicon) {
       return new St.Icon({
@@ -275,8 +272,8 @@ const resultMetaOfRecentItem = (vscode: imports.gi.Gio.DesktopAppInfo) => (
  * @returns A search provider which exposes the given items.
  */
 const createProvider = (
-  vscode: imports.gi.Gio.DesktopAppInfo,
-  settings: imports.gi.Gio.GSettings,
+  vscode: Gio.DesktopAppInfo,
+  settings: Gio.GSettings,
   items: RecentItems
 ): SearchProvider => ({
   id: Self.uuid,
