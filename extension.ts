@@ -163,7 +163,7 @@ const recentItemMatchesTerms = (
   item: RecentItem,
   terms: ReadonlyArray<string> | null
 ): boolean =>
-  !!terms &&
+  terms !== null &&
   terms.every((t) => item.name.includes(t) || item.readablePath.includes(t));
 
 /**
