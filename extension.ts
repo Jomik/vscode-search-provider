@@ -254,7 +254,6 @@ const resultMetaOfRecentItem = (vscode: Gio.DesktopAppInfo) => (
     if (gicon) {
       return new St.Icon({
         gicon,
-        // eslint-disable-next-line @typescript-eslint/camelcase
         icon_size: size,
       });
     } else {
