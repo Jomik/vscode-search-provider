@@ -4,6 +4,6 @@
   "description": "Provide recent VSCode projects as search results in overview",
   "shell-version": ["3.34", "3.36"],
   "url": "https://github.com/jomik/vscode-search-provider",
-  "version": 15,
+  "version": 16,
   "settings-schema": "org.gnome.shell.extensions.vscode-search-provider"
 }
