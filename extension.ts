@@ -329,6 +329,22 @@ const createRecentItem = (kind: RecentItemKind) => (
 };
 
 /**
+ * Convert any workspace item objects to URIs.
+ *
+ * @param item The workspace item from storage.json
+ * @returns The URI for the workspace
+ */
+const workspaceItemToUri = (
+  item: string | { configURIPath: string }
+): string => {
+  if (typeof item === "object" && "configURIPath" in item) {
+    return item.configURIPath;
+  } else {
+    return item;
+  }
+};
+
+/**
  * Find recent items from VSCode.
  *
  * @param configDirectoryName The name of the config directory of the code app
@@ -346,11 +362,14 @@ const findVSCodeRecentItems = (
 
     const storage = JSON.parse(ByteArray.toString(contents));
 
-    const recentWorkspaceURIs: string[] =
+    const recentWorkspaceItems: (string | { configURIPath: string })[] =
       storage.openedPathsList.workspaces3 ||
       storage.openedPathsList.workspaces2 ||
       storage.openedPathsList.workspaces ||
       [];
+
+    const recentWorkspaceURIs = recentWorkspaceItems.map(workspaceItemToUri);
+
     const recentFileURIs: string[] =
       storage.openedPathsList.files2 || storage.openedPathsList.files || [];
 
