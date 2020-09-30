@@ -328,6 +328,26 @@ const createRecentItem = (kind: RecentItemKind) => (
   };
 };
 
+interface MultiRootWorkspaceItem {
+  readonly configURIPath: string;
+}
+
+type WorkspaceItem = string | MultiRootWorkspaceItem;
+
+/**
+ * Convert any workspace item objects to URIs.
+ *
+ * @param item The workspace item from storage.json
+ * @returns The URI for the workspace
+ */
+const workspaceItemToUri = (item: WorkspaceItem): string => {
+  if (typeof item === "object" && "configURIPath" in item) {
+    return item.configURIPath;
+  } else {
+    return item;
+  }
+};
+
 /**
  * Find recent items from VSCode.
  *
@@ -346,12 +366,17 @@ const findVSCodeRecentItems = (
 
     const storage = JSON.parse(ByteArray.toString(contents));
 
-    const recentWorkspaceURIs: string[] =
+    const recentWorkspaceItems: ReadonlyArray<WorkspaceItem> =
       storage.openedPathsList.workspaces3 ||
       storage.openedPathsList.workspaces2 ||
       storage.openedPathsList.workspaces ||
       [];
-    const recentFileURIs: string[] =
+
+    const recentWorkspaceURIs: ReadonlyArray<string> = recentWorkspaceItems.map(
+      workspaceItemToUri
+    );
+
+    const recentFileURIs: ReadonlyArray<string> =
       storage.openedPathsList.files2 || storage.openedPathsList.files || [];
 
     const recentItems = recentWorkspaceURIs
