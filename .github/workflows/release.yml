@@ -7,19 +7,19 @@ on:
 
 jobs:
   github-release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
+      - name: apt-get install gnome-shell
+        run: |
+          sudo apt-get -q update
+          sudo apt-get -qq -y install gnome-shell
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
       - run: yarn install
       - run: yarn compile
-      # Compile the schema and package the extension
-      - run: docker run --rm -v "${GITHUB_WORKSPACE}:/github" ubuntu:rolling /bin/sh -c 'apt-get update -qq > /dev/null && DEBIAN_FRONTEND=noninteractive apt-get install -qq -y gnome-shell yarnpkg > /dev/null && cd /github && yarnpkg package'
-      - name: Upload package to Github
-        uses: svenstaro/upload-release-action@v1-release
+      - run: yarn package
+      - uses: softprops/action-gh-release@v1
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: vscode-search-provider@jomik.org.shell-extension.zip
-          asset_name: vscode-search-provider@jomik.org.shell-extension.zip
-          tag: ${{ github.ref }}
-          overwrite: true
+          files: vscode-search-provider@jomik.org.shell-extension.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
