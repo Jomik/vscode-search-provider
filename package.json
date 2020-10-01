@@ -19,7 +19,7 @@
     "compile": "tsc",
     "compile:schemas": "glib-compile-schemas --strict schemas/",
     "format": "prettier *.ts *.json prefs.js .eslintrc.json",
-    "package": "gnome-extensions pack --extra-source utils.js --extra-source prefs.xml",
+    "package": "gnome-extensions pack --extra-source utils.js --extra-source prefs.xml --extra-source LICENSE",
     "nested": "dbus-run-session -- gnome-shell --nested --wayland"
   }
 }

@@ -24,6 +24,7 @@
 // top-level, because typescript considers all files as single project with one
 // common top scope.  Hence we can't redefine imports, etc.
 
+const ByteArray = imports.byteArray;
 const Gtk = imports.gi.Gtk;
 const Gio = imports.gi.Gio;
 
@@ -40,24 +41,30 @@ function buildPrefsWidget() {
   buildable.add_from_file(Self.dir.get_child("prefs.xml").get_path());
   const box = buildable.get_object("prefs_widget");
 
-  const version_label = buildable.get_object("version_info");
-  version_label.set_text(`[VSCode-Search-Provider v${Self.metadata.version}]`);
+  const license = ByteArray.toString(
+    Self.dir.get_child("LICENSE").load_contents(null)[1]
+  );
+  const about_license_buffer = buildable.get_object("about_license_buffer");
+  about_license_buffer.set_text(license, -1);
+
+  const about_version_label = buildable.get_object("about_version_label");
+  about_version_label.set_text(`Version ${Self.metadata.version}`);
 
   settings.bind(
     "show-workspaces",
-    buildable.get_object("field_workspaces"),
+    buildable.get_object("show_workspaces_switch"),
     "active",
     Gio.SettingsBindFlags.DEFAULT
   );
   settings.bind(
     "show-files",
-    buildable.get_object("field_files"),
+    buildable.get_object("show_files_switch"),
     "active",
     Gio.SettingsBindFlags.DEFAULT
   );
   settings.bind(
     "search-prefix",
-    buildable.get_object("search_prefix"),
+    buildable.get_object("search_prefix_entry"),
     "text",
     Gio.SettingsBindFlags.DEFAULT
   );
