@@ -9,7 +9,9 @@ jobs:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
       - name: Install glib-compile-schemas and gnome-shell
-        run: sudo apt-get update -qq && DEBIAN_FRONTEND=noninteractive sudo -E apt-get install -qq -y libglib2.0-bin gnome-shell
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install --no-install-recommends -qq -y libglib2.0-bin gnome-shell
       - run: yarn install
       - run: yarn compile
       - run: yarn compile:schemas
