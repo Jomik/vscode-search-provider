@@ -22,7 +22,7 @@
     "compile:schemas": "glib-compile-schemas --strict schemas/",
     "compile": "concurrently yarn:compile:prefs yarn:compile:extension yarn:compile:schemas",
     "format": "prettier **/*.ts *.json .eslintrc.json",
-    "package": "gnome-extensions pack --extra-source utils.js --extra-source prefs.xml --extra-source LICENSE",
+    "package": "gnome-extensions pack --extra-source prefs.xml --extra-source LICENSE",
     "nested": "dbus-run-session -- gnome-shell --nested --wayland"
   }
 }
