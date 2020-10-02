@@ -1,4 +1,4 @@
-// Copyright (c) 2019 Sebastian Wiesner <sebastian@swsnr.de>
+// Copyright (c) Sebastian Wiesner <sebastian@swsnr.de>
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -135,6 +135,8 @@ declare interface SearchProvider {
    *
    * Called when the user clicks on the search provider.
    *
+   * Likely ignored if `canLaunchSearch` is `false`.
+   *
    * @param terms The terms
    */
   launchSearch(terms: string[]): void;
@@ -164,6 +166,12 @@ declare interface ExtensionObject {
   readonly uuid: string;
   readonly dir: imports.gi.Gio.File;
   readonly path: string;
+}
+
+declare interface ExtensionState {
+  enable(): void;
+
+  disable(): void;
 }
 
 declare namespace imports {

@@ -24,30 +24,38 @@
 // top-level, because typescript considers all files as single project with one
 // common top scope.  Hence we can't redefine imports, etc.
 
-const ByteArray = imports.byteArray;
-const Gtk = imports.gi.Gtk;
-const Gio = imports.gi.Gio;
+import ByteArray = imports.byteArray;
+import Gtk = imports.gi.Gtk;
+import Gio = imports.gi.Gio;
 
-const ExtensionUtils = imports.misc.extensionUtils;
-const Self = ExtensionUtils.getCurrentExtension();
+import ExtensionUtils = imports.misc.extensionUtils;
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const Self = ExtensionUtils.getCurrentExtension()!;
 
-// eslint-disable-next-line no-unused-vars
-function init() {}
+// eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/no-empty-function
+function init(): void {}
 
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function buildPrefsWidget() {
-  const settings = ExtensionUtils.getSettings();
-  const buildable = new Gtk.Builder();
-  buildable.add_from_file(Self.dir.get_child("prefs.xml").get_path());
-  const box = buildable.get_object("prefs_widget");
+  const ui = Self.dir.get_child("prefs.xml").get_path();
+  if (!ui) {
+    throw new Error("Fatal error, failed to find prefs.xml");
+  }
+  const buildable = Gtk.Builder.new_from_file(ui);
+  const box = buildable.get_object<Gtk.Widget>("prefs_widget");
 
+  const settings = ExtensionUtils.getSettings();
   const license = ByteArray.toString(
     Self.dir.get_child("LICENSE").load_contents(null)[1]
   );
-  const about_license_buffer = buildable.get_object("about_license_buffer");
+  const about_license_buffer = buildable.get_object<Gtk.TextBuffer>(
+    "about_license_buffer"
+  );
   about_license_buffer.set_text(license, -1);
 
-  const about_version_label = buildable.get_object("about_version_label");
+  const about_version_label = buildable.get_object<Gtk.Label>(
+    "about_version_label"
+  );
   about_version_label.set_text(`Version ${Self.metadata.version}`);
 
   settings.bind(

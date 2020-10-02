@@ -1,8 +1,8 @@
 # Node libraries
 /node_modules/
 
-# Compiled JS extension
-/extension.js
+# Compiled JS files
+*.js
 
 # Compiled schema file
 /schemas/*.compiled
