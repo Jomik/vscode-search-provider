@@ -311,11 +311,10 @@ const createProvider = (
  * Create a recent item from a URI.
  *
  * @param kind The kind of the new item
+ * @param uri The URI of the new item
  * @returns The recent item for the URI
  */
-const createRecentItem = (kind: RecentItemKind) => (
-  uri: string
-): RecentItem => {
+const createRecentItem = (kind: RecentItemKind, uri: string): RecentItem => {
   const file = Gio.File.new_for_uri(uri);
   return {
     id: `vscode-search-provider-${uri}`,
@@ -328,11 +327,20 @@ const createRecentItem = (kind: RecentItemKind) => (
   };
 };
 
-interface MultiRootWorkspaceItem {
-  readonly configURIPath: string;
-}
-
-type WorkspaceItem = string | MultiRootWorkspaceItem;
+/**
+ * A type predicate to check that an object has a certain property.
+ *
+ * See https://fettblog.eu/typescript-hasownproperty/, works around the fact that
+ * "in" is no type predicate currently.
+ *
+ * @param obj The object to check
+ * @param prop The property to look for
+ */
+const hasOwnProperty = <X extends unknown, Y extends PropertyKey>(
+  obj: X,
+  prop: Y
+): obj is X & Record<Y, unknown> =>
+  Object.prototype.hasOwnProperty.call(obj, prop);
 
 /**
  * Convert any workspace item objects to URIs.
@@ -340,12 +348,75 @@ type WorkspaceItem = string | MultiRootWorkspaceItem;
  * @param item The workspace item from storage.json
  * @returns The URI for the workspace
  */
-const workspaceItemToUri = (item: WorkspaceItem): string => {
-  if (typeof item === "object" && "configURIPath" in item) {
+const parseWorkspaceItem = (item: unknown): string | null => {
+  if (typeof item === "string") {
+    return item;
+  } else if (
+    item &&
+    typeof item === "object" &&
+    hasOwnProperty(item, "configURIPath") &&
+    typeof item.configURIPath === "string"
+  ) {
     return item.configURIPath;
   } else {
-    return item;
+    l.error(`Failed to parse workspace item: ${JSON.stringify(item)}`);
+    return null;
   }
+};
+
+interface MaybeOpenedPathsList {
+  readonly workspaces?: unknown;
+  readonly workspaces2?: unknown;
+  readonly workspaces3?: unknown;
+  readonly files?: unknown;
+  readonly files2?: unknown;
+}
+
+const getRecentItemsFromStorage = (
+  storage: unknown
+): ReadonlyArray<RecentItem> => {
+  const openedPathsList =
+    storage &&
+    typeof storage === "object" &&
+    hasOwnProperty(storage, "openedPathsList") &&
+    typeof storage.openedPathsList === "object"
+      ? (storage.openedPathsList as MaybeOpenedPathsList)
+      : undefined;
+
+  if (typeof openedPathsList === "undefined") {
+    l.error(
+      `Failed to find openedPathsList in storage: ${JSON.stringify(storage)}`
+    );
+    return [];
+  }
+
+  const workspaceItems =
+    openedPathsList.workspaces3 ||
+    openedPathsList.workspaces2 ||
+    openedPathsList.workspaces;
+
+  const recentItems: RecentItem[] = [];
+  if (workspaceItems && Array.isArray(workspaceItems)) {
+    for (const item of workspaceItems) {
+      const uri = parseWorkspaceItem(item);
+      if (uri) {
+        recentItems.push(createRecentItem("workspace", uri));
+      }
+    }
+  }
+
+  const recentFiles = openedPathsList.files2 || openedPathsList.files;
+  if (recentFiles && Array.isArray(recentFiles)) {
+    for (const item of recentFiles) {
+      if (typeof item === "string") {
+        recentItems.push(createRecentItem("file", item));
+      } else {
+        l.error(`Failed to parse recent file: ${JSON.stringify(item)}`);
+      }
+    }
+  }
+
+  return recentItems;
 };
 
 /**
@@ -364,24 +435,9 @@ const findVSCodeRecentItems = (
       .get_child("storage.json")
       .load_contents(null)[1];
 
-    const storage = JSON.parse(ByteArray.toString(contents));
-
-    const recentWorkspaceItems: ReadonlyArray<WorkspaceItem> =
-      storage.openedPathsList.workspaces3 ||
-      storage.openedPathsList.workspaces2 ||
-      storage.openedPathsList.workspaces ||
-      [];
-
-    const recentWorkspaceURIs: ReadonlyArray<string> = recentWorkspaceItems.map(
-      workspaceItemToUri
+    const recentItems = getRecentItemsFromStorage(
+      JSON.parse(ByteArray.toString(contents)) as unknown
     );
-
-    const recentFileURIs: ReadonlyArray<string> =
-      storage.openedPathsList.files2 || storage.openedPathsList.files || [];
-
-    const recentItems = recentWorkspaceURIs
-      .map(createRecentItem("workspace"))
-      .concat(recentFileURIs.map(createRecentItem("file")));
 
     resolve(new Map(recentItems.map((item) => [item.id, item])));
   });
