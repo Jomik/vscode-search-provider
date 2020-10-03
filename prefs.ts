@@ -24,40 +24,55 @@
 // top-level, because typescript considers all files as single project with one
 // common top scope.  Hence we can't redefine imports, etc.
 
-const Gtk = imports.gi.Gtk;
-const Gio = imports.gi.Gio;
+import ByteArray = imports.byteArray;
+import Gtk = imports.gi.Gtk;
+import Gio = imports.gi.Gio;
 
-const ExtensionUtils = imports.misc.extensionUtils;
-const Self = ExtensionUtils.getCurrentExtension();
+import ExtensionUtils = imports.misc.extensionUtils;
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const Self = ExtensionUtils.getCurrentExtension()!;
 
-// eslint-disable-next-line no-unused-vars
-function init() {}
+// eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/no-empty-function
+function init(): void {}
 
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function buildPrefsWidget() {
-  const settings = ExtensionUtils.getSettings();
-  const buildable = new Gtk.Builder();
-  buildable.add_from_file(Self.dir.get_child("prefs.xml").get_path());
-  const box = buildable.get_object("prefs_widget");
+  const ui = Self.dir.get_child("prefs.xml").get_path();
+  if (!ui) {
+    throw new Error("Fatal error, failed to find prefs.xml");
+  }
+  const buildable = Gtk.Builder.new_from_file(ui);
+  const box = buildable.get_object<Gtk.Widget>("prefs_widget");
 
-  const version_label = buildable.get_object("version_info");
-  version_label.set_text(`[VSCode-Search-Provider v${Self.metadata.version}]`);
+  const settings = ExtensionUtils.getSettings();
+  const license = ByteArray.toString(
+    Self.dir.get_child("LICENSE").load_contents(null)[1]
+  );
+  const about_license_buffer = buildable.get_object<Gtk.TextBuffer>(
+    "about_license_buffer"
+  );
+  about_license_buffer.set_text(license, -1);
+
+  const about_version_label = buildable.get_object<Gtk.Label>(
+    "about_version_label"
+  );
+  about_version_label.set_text(`Version ${Self.metadata.version}`);
 
   settings.bind(
     "show-workspaces",
-    buildable.get_object("field_workspaces"),
+    buildable.get_object("show_workspaces_switch"),
     "active",
     Gio.SettingsBindFlags.DEFAULT
   );
   settings.bind(
     "show-files",
-    buildable.get_object("field_files"),
+    buildable.get_object("show_files_switch"),
     "active",
     Gio.SettingsBindFlags.DEFAULT
   );
   settings.bind(
     "search-prefix",
-    buildable.get_object("search_prefix"),
+    buildable.get_object("search_prefix_entry"),
     "text",
     Gio.SettingsBindFlags.DEFAULT
   );

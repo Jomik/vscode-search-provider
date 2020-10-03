@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "outFile": "./extension.js"
+  },
+  "files": ["./extension.ts"],
+  "include": ["types/**/*.d.ts"]
+}

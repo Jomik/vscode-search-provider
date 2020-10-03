@@ -1,4 +1,4 @@
-// Copyright (c) 2019 Sebastian Wiesner <sebastian@swsnr.de>
+// Copyright (c) Sebastian Wiesner <sebastian@swsnr.de>
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -19,22 +19,7 @@
 // SOFTWARE.
 
 declare namespace imports {
-  class ByteArray {
-    private constructor();
-  }
-
-  namespace byteArray {
-    function toString(array: ByteArray): string;
-  }
-
   namespace gi {
-    namespace GLib {
-      /**
-       * https://gjs-docs.gnome.org/glib20~2.60.1/glib.get_user_config_dir
-       */
-      function get_user_config_dir(): string;
-    }
-
     namespace Gio {
       /**
        * https://gjs-docs.gnome.org/gio20~2.0_api/gio.file
@@ -58,6 +43,11 @@ declare namespace imports {
         get_child(name: string): File;
 
         /**
+         * https://gjs-docs.gnome.org/gio20~2.0_api/gio.file#method-get_path
+         */
+        get_path(): string | null;
+
+        /**
          * https://gjs-docs.gnome.org/gio20~2.0_api/gio.file#method-get_basename
          */
         get_basename(): string | null;
@@ -66,11 +56,6 @@ declare namespace imports {
          * https://gjs-docs.gnome.org/gio20~2.0_api/gio.file#method-get_parse_name
          */
         get_parse_name(): string;
-
-        /**
-         * https://gjs-docs.gnome.org/gio20~2.0_api/gio.file#method-get_path
-         */
-        get_path(): string | null;
 
         /**
          * https://gjs-docs.gnome.org/gio20~2.0_api/gio.file#method-load_contents
@@ -163,6 +148,15 @@ declare namespace imports {
         launch(files: File[], context: AppLaunchContext | null): boolean;
       }
 
+      export enum SettingsBindFlags {
+        DEFAULT,
+        GET,
+        SET,
+        NO_SENSITIVITY,
+        GET_NO_CHANGES,
+        INVERT_BOOLEAN,
+      }
+
       /**
        * https://gjs-docs.gnome.org/gio20~2.0_api/gio.desktopappinfo
        */
@@ -188,15 +182,16 @@ declare namespace imports {
          * https://gjs-docs.gnome.org/gio20~2.0_api/gio.settings#method-get_boolean
          */
         get_boolean(key: string): boolean;
-      }
-    }
 
-    /**
-     * Shell toolkit.
-     */
-    namespace St {
-      export class Icon {
-        constructor(props: { gicon: Gio.Icon; icon_size: number });
+        /**
+         * https://gjs-docs.gnome.org/gio20~2.64p/gio.settings#method-bind
+         */
+        bind(
+          key: string,
+          object: GObject.Object,
+          property: string,
+          flags: Gio.SettingsBindFlags
+        ): void;
       }
     }
   }

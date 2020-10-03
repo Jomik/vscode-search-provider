@@ -1,16 +1,11 @@
 {
-  "compilerOptions": {
-    "target": "es2017",
-    // GJS doesn't have modules
-    "module": "none",
-    "lib": ["es2017"],
-    "removeComments": false,
-
-    /* Strict Type-Checking Options */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
-  }
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.extension.json"
+    },
+    {
+      "path": "./tsconfig.prefs.json"
+    }
+  ]
 }
