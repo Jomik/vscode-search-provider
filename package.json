@@ -1,6 +1,6 @@
 {
   "name": "vscode-search-provider",
-  "version": "16",
+  "version": "17",
   "description": "Provide recent VSCode projects as search results in overview",
   "repository": "https://github.com/jomik/vscode-search-provider.git",
   "author": "Jonas Holst Damtoft",
