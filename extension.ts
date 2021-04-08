@@ -368,6 +368,7 @@ interface MaybeOpenedPathsList {
   readonly workspaces?: unknown;
   readonly workspaces2?: unknown;
   readonly workspaces3?: unknown;
+  readonly entries?: unknown;
   readonly files?: unknown;
   readonly files2?: unknown;
 }
@@ -412,6 +413,19 @@ const getRecentItemsFromStorage = (
         recentItems.push(createRecentItem("file", item));
       } else {
         l.error(`Failed to parse recent file: ${JSON.stringify(item)}`);
+      }
+    }
+  }
+
+  const entries = openedPathsList.entries;
+  if (entries && Array.isArray(entries)) {
+    for (const item of entries) {
+      if (item && typeof item.folderUri === "string") {
+        recentItems.push(createRecentItem("workspace", item.folderUri));
+      } else if (item && typeof item.fileUri === "string") {
+        recentItems.push(createRecentItem("file", item.fileUri));
+      } else {
+        l.error(`Failed to parse recent path: ${JSON.stringify(item)}`);
       }
     }
   }
