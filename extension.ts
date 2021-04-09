@@ -162,9 +162,18 @@ const lookupRecentItems = (
 const recentItemMatchesTerms = (
   item: RecentItem,
   terms: ReadonlyArray<string> | null
-): boolean =>
-  terms !== null &&
-  terms.every((t) => item.name.includes(t) || item.readablePath.includes(t));
+): boolean => {
+  if (!terms) {
+    return false;
+  } else {
+    const lowerName = item.name.toLowerCase();
+    const lowerReadablePath = item.readablePath.toLowerCase();
+    return terms.every((term) => {
+      const lowerTerm = term.toLowerCase();
+      return lowerName.includes(lowerTerm) || lowerReadablePath.includes(lowerTerm);
+    });
+  }
+}
 
 /**
  * Find all items which match all of the given terms and have a kind contained in `kinds`.
