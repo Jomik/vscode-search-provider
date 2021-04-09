@@ -170,10 +170,12 @@ const recentItemMatchesTerms = (
     const lowerReadablePath = item.readablePath.toLowerCase();
     return terms.every((term) => {
       const lowerTerm = term.toLowerCase();
-      return lowerName.includes(lowerTerm) || lowerReadablePath.includes(lowerTerm);
+      return (
+        lowerName.includes(lowerTerm) || lowerReadablePath.includes(lowerTerm)
+      );
     });
   }
-}
+};
 
 /**
  * Find all items which match all of the given terms and have a kind contained in `kinds`.
