@@ -1,3 +1,5 @@
+Deprecated, see [#42](/../../issues/42)
+
 # vscode-search-provider
 
 GNOME Search Provider for recent VS Code projects.
