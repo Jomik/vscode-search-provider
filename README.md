@@ -1,5 +1,7 @@
 Deprecated, see [#42](/../../issues/42)
 
+Look at https://github.com/lunaryorn/gnome-search-providers-vscode for an alternative.
+
 # vscode-search-provider
 
 GNOME Search Provider for recent VS Code projects.
